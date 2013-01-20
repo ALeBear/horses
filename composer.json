@@ -11,10 +11,14 @@
         }
     ],
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3",
+        "doctrine/orm": "*",
+        "symfony/yaml": "*",
+        "symfony/config": "*",
+        "symfony/dependency-injection": "*",
+        "symfony/http-foundation": "*",
     },
     "autoload": {
         "psr-0": { "horses": "src" }
-    },
-    "minimum-stability": "dev"
+    }
 }
