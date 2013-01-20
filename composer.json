@@ -16,5 +16,5 @@
     "autoload": {
         "psr-0": { "horses": "" }
     },
-    "minimum-stability": "dev"
+    "source-dir": "src"
 }
