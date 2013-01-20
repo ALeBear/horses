@@ -1,0 +1,37 @@
+<?php
+
+namespace horses\plugin\auth;
+
+use horses\IPlugin;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpFoundation\Request;
+
+class Plugin implements IPlugin
+{
+    public function bootstrap(Request $request, Container $dependencyInjectionContainer)
+    {
+        /* @var $config Symfony\Component\Config\Collection */
+        $config = $dependencyInjectionContainer->get('config');
+        $config->add('auth', new Config('auth.yml', $dependencyInjectionContainer->get('config_loader')));
+
+        $dependencyInjectionContainer->register('auth', 'horses\\plugin\\auth\\Auth')
+            ->addMethodCall('injectEntityManager', array(new Reference('entity_manager')))
+            ->addMethodCall('injectUserClassname', array($config->get('auth.userClassname')));
+
+        $user = $dependencyInjectionContainer->get('auth')->getUserFromSession($request->getSession());
+        $dependencyInjectionContainer->set('user', $user);
+    }
+    
+    public function dispatch(Request $request, Container $dependencyInjectionContainer)
+    {
+        //Redirect if page is protected
+        $config = $dependencyInjectionContainer->get('config');
+        if (!$dependencyInjectionContainer->has('user')
+            && !in_array($request->attributes->get('ROUTE'), $config->get('auth.disableAuth', array()))
+            && !$request->attributes->get('BOOTSTRAP_ONLY')) {
+            header(sprintf('Location: %s', $config->get('auth.noAuthRedirect')));
+            exit;
+        }
+    }
+}

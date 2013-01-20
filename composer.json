@@ -1,0 +1,21 @@
+{
+    "name": "horses/horses",
+    "type": "library",
+    "description": "Horses PHP MVC framezork",
+    "keywords": [],
+    "license": "LGPLv3",
+    "authors": [
+        {
+            "name": "Antoine LeBear",
+            "email": "un.singe.en.hiver@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-0": { "horses": "" }
+    },
+    "target-dir": "Symfony/Component/Config",
+    "minimum-stability": "dev"
+}
