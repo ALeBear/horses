@@ -16,6 +16,5 @@
     "autoload": {
         "psr-0": { "horses": "" }
     },
-    "target-dir": "Symfony/Component/Config",
     "minimum-stability": "dev"
 }
