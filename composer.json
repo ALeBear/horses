@@ -19,6 +19,9 @@
         "symfony/http-foundation": "*"
     },
     "autoload": {
-        "psr-0": { "horses": "src" }
+        "psr-0": {
+            "horses": "src",
+            "Symfony\\Component\\Config": "src"
+        }
     }
 }

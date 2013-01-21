@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\Symfony;
+namespace Symfony\Component\Config\Loader;
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Config\Loader\FileLoader;

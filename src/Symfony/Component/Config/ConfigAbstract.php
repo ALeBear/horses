@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\Symfony;
+namespace Symfony\Component\Config;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;

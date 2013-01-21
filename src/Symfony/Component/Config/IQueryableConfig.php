@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\Symfony;
+namespace Symfony\Component\Config;
 
 interface IQueryableConfig
 {
@@ -16,7 +16,7 @@ interface IQueryableConfig
      * Temporarily (for the current PHP call) set a config value
      * @param string $name
      * @param mixed $value
-     * @return horses\Symfony\ConfigAbstract $this
+     * @return Symfony\Component\Config\ConfigAbstract $this
      */
     public function set($name, $value);
 }

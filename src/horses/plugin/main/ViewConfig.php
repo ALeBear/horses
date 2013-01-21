@@ -2,7 +2,7 @@
 
 namespace horses\plugin\main;
 
-use horses\Symfony\ConfigAbstract;
+use Symfony\Component\Config\ConfigAbstract;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class ViewConfig extends ConfigAbstract
