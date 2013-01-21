@@ -7,7 +7,7 @@ use InvalidArgumentException;
 /**
  * A collection of config files
  */
-class ConfigCollection implements IQueryableConfig
+class Collection implements IQueryableConfig
 {
     /**
      * @var Config[]
