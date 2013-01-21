@@ -29,12 +29,13 @@ class Kernel
     }
     
     /**
+     * @param string $baseDir The base directory, usually the parent directory of it all
      * @param string[] $plugins Class names (no namespacing = horses's natives)
      * @param boolean $bootstrapOnly Only a bootstrap if set to true
      * @return Symfony\Component\DependencyInjection\Container
      * @throws InvalidArgumentException When a plugin file is not found
      */
-    public function run(array $plugins, $bootstrapOnly = false)
+    public function run($baseDir, array $plugins, $bootstrapOnly = false)
     {
         try {
             $request = Request::createFromGlobals();
@@ -45,7 +46,7 @@ class Kernel
             //Set some attributes
             $request->attributes->set('BOOTSTRAP_ONLY', $bootstrapOnly);
             $request->attributes->set('ENV', isset($_SERVER['ENV']) ? $_SERVER['ENV'] : 'prod');
-            $request->attributes->set('DIR_BASE', realpath(__DIR__ . '/../..'));
+            $request->attributes->set('DIR_BASE', $baseDir);
             $request->attributes->set('DIR_APPLICATION', $request->attributes->get('DIR_BASE') . '/application');
             $request->attributes->set('DIR_LIB', $request->attributes->get('DIR_BASE') . '/lib');
             $request->attributes->set('DIR_CONTROLLERS', $request->attributes->get('DIR_APPLICATION') . '/controller');
