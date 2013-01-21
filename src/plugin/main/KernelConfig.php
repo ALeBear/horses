@@ -2,7 +2,7 @@
 
 namespace horses\plugin\main;
 
-use Symfony\Component\Config\ConfigAbstract;
+use horses\Symfony\ConfigAbstract;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class KernelConfig extends ConfigAbstract

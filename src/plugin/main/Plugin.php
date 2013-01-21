@@ -2,13 +2,13 @@
 
 namespace horses\plugin\main;
 
-use Symfony\Component\Config\Collection;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use horses\IPlugin;
+use horses\Symfony\YamlFileLoader;
+use horses\Symfony\ConfigCollection;
 use horses\KernelPanicException;
 use horses\Kernel404Exception;
 use horses\Router;
@@ -28,7 +28,7 @@ class Plugin implements IPlugin
             new FileLocator(array($configDir, $configDir . '/' . $request->attributes->get('ENV'))));
 
         $dependencyInjectionContainer->set('config_loader', $loader);
-        $dependencyInjectionContainer->set('config', Collection::factory()
+        $dependencyInjectionContainer->set('config', ConfigCollection::factory()
             ->add('kernel', new KernelConfig('kernel.yml', $loader))
             ->add('view', new ViewConfig('view.yml', $loader)));
         $request->attributes->set('DIR_HTDOCS', $request->attributes->get('DIR_BASE') . '/' . $dependencyInjectionContainer->get('config')->get('kernel.htdocsDir'));
