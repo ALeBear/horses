@@ -16,7 +16,7 @@
         "symfony/yaml": "*",
         "symfony/config": "*",
         "symfony/dependency-injection": "*",
-        "symfony/http-foundation": "*",
+        "symfony/http-foundation": "*"
     },
     "autoload": {
         "psr-0": { "horses": "src" }
