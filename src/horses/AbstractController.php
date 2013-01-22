@@ -107,18 +107,12 @@ abstract class AbstractController
         
         //Call methods
         method_exists($this, 'prepare') && call_user_func_array(array($this, 'prepare'), $params);
-        $this->request->isMethod('post') && call_user_func_array(array($this, 'post'), $params);
+        method_exists($this, 'post') && $this->request->isMethod('post') && call_user_func_array(array($this, 'post'), $params);
         call_user_func_array(array($this, 'execute'), $params);
         
         //Finally, render.
         $this->render();
     }
-    
-    /**
-     * Will only be called if the request is of type "post", after prepare(),
-     * before execute()
-     */
-    public function post() {}
     
     /**
      * Renders the view
