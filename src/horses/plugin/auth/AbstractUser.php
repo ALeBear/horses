@@ -55,6 +55,14 @@ abstract class AbstractUser
     }
     
     /**
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    /**
      * @return string
      */
     public function getEmail()
