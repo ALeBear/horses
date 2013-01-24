@@ -121,7 +121,7 @@ abstract class AbstractController
     protected function prepareMetas()
     {
         //Add action files if they exists
-        $urlPrefix = $this->dependencyInjectionContainer->get('config')->has('kernel.urlPrefix')
+        $urlPrefix = $this->dependencyInjectionContainer->get('config')->get('kernel.urlPrefix')
             ? '/' . $this->dependencyInjectionContainer->get('config')->get('kernel.urlPrefix')
             : '';
         $jsActionFile = sprintf('/js/%s.%s.js', $this->request->attributes->get('MODULE'), ucfirst($this->request->attributes->get('ACTION')));
