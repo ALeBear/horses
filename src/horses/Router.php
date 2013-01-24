@@ -66,9 +66,9 @@ class Router
     /**
      * @param \horses\Route $route
      */
-    public static function redirect(Route $route)
+    public function redirect(Route $route)
     {
-        self::redirectExternal($route->getUrl());
+        self::redirectExternal($route->addOptions(array('prefix' => "/" . $this->getPrefix()))->getUrl());
     }
     
     /**

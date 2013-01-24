@@ -69,4 +69,14 @@ class Route
         
         return $path;
     }
+    
+    /**
+     * @param string[] $options
+     * @return \horses\Route
+     */
+    public function addOptions(array $options)
+    {
+        $this->options = array_merge($this->options, $options);
+        return $this;
+    }
 }
