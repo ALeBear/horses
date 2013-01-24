@@ -86,7 +86,7 @@ class Locale
             }
         }
         
-        return '';
+        return vsprintf($token, $params);
     }
     
     /**
