@@ -121,10 +121,15 @@ abstract class AbstractController
     protected function prepareMetas()
     {
         //Add action files if they exists
-        $jsActionFile = sprintf('/js/%s.%s.js',$this->request->attributes->get('MODULE'), ucfirst($this->request->attributes->get('ACTION')));
-        file_exists(sprintf('%s%s', $this->request->attributes->get('DIR_HTDOCS'), $jsActionFile)) && $this->javascripts[] = $jsActionFile;
+        $urlPrefix = $this->dependencyInjectionContainer->get('config')->has('kernel.urlPrefix')
+            ? '/' . $this->dependencyInjectionContainer->get('config')->get('kernel.urlPrefix')
+            : '';
+        $jsActionFile = sprintf('/js/%s.%s.js', $this->request->attributes->get('MODULE'), ucfirst($this->request->attributes->get('ACTION')));
+        file_exists(sprintf('%s%s', $this->request->attributes->get('DIR_HTDOCS'), $jsActionFile))
+            && $this->javascripts[] = $urlPrefix . $jsActionFile;
         $cssActionFile = sprintf('/css/%s.%s.css',$this->request->attributes->get('MODULE'), ucfirst($this->request->attributes->get('ACTION')));
-        file_exists(sprintf('%s%s', $this->request->attributes->get('DIR_HTDOCS'), $cssActionFile)) && $this->css[] = $cssActionFile;
+        file_exists(sprintf('%s%s', $this->request->attributes->get('DIR_HTDOCS'), $cssActionFile))
+            && $this->css[] = $urlPrefix . $cssActionFile;
         
         $this->metas['javascripts'] = $this->metas['css'] = '';
         foreach ($this->javascripts as $script) {

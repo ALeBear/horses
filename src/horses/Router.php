@@ -60,7 +60,7 @@ class Router
      */
     public function buildRoute($route, array $query = array(), array $options = array())
     {
-        return new Route($route, $query, array_merge($options, array('prefix' => "/" . $this->getPrefix())));
+        return new Route($route, $query, array_merge($options, array('prefix' => $this->getPrefix())));
     }
     
     /**
@@ -68,7 +68,7 @@ class Router
      */
     public function redirect(Route $route)
     {
-        self::redirectExternal($route->addOptions(array('prefix' => "/" . $this->getPrefix()))->getUrl());
+        self::redirectExternal($route->addOptions(array('prefix' => $this->getPrefix()))->getUrl());
     }
     
     /**
@@ -85,6 +85,7 @@ class Router
      */
     public function getPrefix()
     {
-        return implode('/', $this->prefixes);
+        $prefix = implode('/', $this->prefixes);
+        return $prefix ? '/' . $prefix : '';
     }
 }
