@@ -14,7 +14,8 @@ class Plugin implements IPlugin
     public function bootstrap(Request $request, Container $dependencyInjectionContainer)
     {
         $proxiesDir = $request->attributes->get('DIR_APPLICATION') . '/doctrineProxies';
-        if (!is_dir($proxiesDir)|| !is_writable($proxiesDir)) {
+        !is_dir($proxiesDir) && @mkdir($proxiesDir, 0755);
+        if (!is_dir($proxiesDir) || !is_writable($proxiesDir)) {
             throw new KernelPanicException(sprintf('Doctrine proxies dir does not exists or not writeable: %s', $proxiesDir));
         }
         
