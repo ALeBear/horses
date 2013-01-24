@@ -30,7 +30,7 @@ class Plugin implements IPlugin
         if (!$dependencyInjectionContainer->has('user')
             && !in_array($request->attributes->get('ROUTE'), $config->get('auth.disableAuth', array()))
             && !$request->attributes->get('BOOTSTRAP_ONLY')) {
-            header(sprintf('Location: %s', $config->get('auth.noAuthRedirect')));
+            header(sprintf('Location: %s', $dependencyInjectionContainer->get('router')->buildRoute($config->get('auth.noAuthRedirect'))->getUrl()));
             exit;
         }
     }
