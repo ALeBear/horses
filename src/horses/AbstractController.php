@@ -90,11 +90,9 @@ abstract class AbstractController
         $this->request = $request;
         $this->response = $response;
 
-        $this
-            ->callMagicMethod('prepare')
-            ->callMagicMethod('post')
-            ->callMagicMethod('execute', true)
-            ->render();
+        $this->callMagicMethod('prepare');
+        $this->request->isMethod('post') && $this->callMagicMethod('post');
+        $this->callMagicMethod('execute', true)->render();
     }
     
     /**
