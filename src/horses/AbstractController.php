@@ -82,7 +82,6 @@ abstract class AbstractController
     }
 
     /**
-     * 
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Response $response
      */
@@ -91,27 +90,11 @@ abstract class AbstractController
         $this->request = $request;
         $this->response = $response;
 
-        //Prepare parameters
-        $reflectionMethod = new ReflectionMethod($this, 'execute');
-        $params = array();
-        foreach ($reflectionMethod->getParameters() as $param) {
-            if ($request->query->has($param->getName())) {
-                $params[] = $request->query->get($param->getName());
-            } else {
-                if (!$param->isDefaultValueAvailable()) {
-                    throw new KernelPanicException(sprintf('Parameter missing for action "%s": %s', $request->attributes->get('ROUTE'), $param->getName()));
-                }
-                $params[] = $param->getDefaultValue();
-            }
-        }
-        
-        //Call methods
-        method_exists($this, 'prepare') && call_user_func_array(array($this, 'prepare'), $params);
-        method_exists($this, 'post') && $this->request->isMethod('post') && call_user_func_array(array($this, 'post'), $params);
-        call_user_func_array(array($this, 'execute'), $params);
-        
-        //Finally, render.
-        $this->render();
+        $this
+            ->callMagicMethod('prepare')
+            ->callMagicMethod('post')
+            ->callMagicMethod('execute', true)
+            ->render();
     }
     
     /**
@@ -221,6 +204,42 @@ abstract class AbstractController
     public function addCss($filename)
     {
         $this->css[] = $filename;
+        return $this;
+    }
+    
+    /**
+     * Calls a magic method, one where the user can declare parameters and they
+     * will be taken from request (aka query string)
+     * @param string $name
+     * @param boolean $mandatory
+     * @return \horses\AbstractController
+     * @throws KernelPanicException If a param is mandatory and not found in request
+     * @throws KernelPanicException If a mandatory method does not exist
+     */
+    protected function callMagicMethod($name, $mandatory = false)
+    {
+        if (!method_exists($this, $name)) {
+            if ($mandatory) {
+                throw new KernelPanicException(sprintf('Method missing from controller %s->%s()', get_class($this), $name));
+            }
+            return $this;
+        }
+        
+        $reflectionMethod = new ReflectionMethod($this, $name);
+        $params = array();
+        foreach ($reflectionMethod->getParameters() as $param) {
+            if ($this->request->query->has($param->getName())) {
+                $params[] = $this->request->query->get($param->getName());
+            } else {
+                if (!$param->isDefaultValueAvailable()) {
+                    throw new KernelPanicException(sprintf('Parameter missing for action "%s": %s', $this->request->attributes->get('ROUTE'), $param->getName()));
+                }
+                $params[] = $param->getDefaultValue();
+            }
+        }
+        
+        call_user_func_array(array($this, $name), $params);
+        
         return $this;
     }
 }
