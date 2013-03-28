@@ -43,6 +43,18 @@ class Plugin implements IPlugin
         
         foreach ($config->get('locale.available') as $code => $urlPrefix) {
             if ($code == $lang) {
+                if (strpos(strtolower(PHP_OS), 'win') !== false) {
+                    switch ($urlPrefix) {
+                        case 'fr':
+                            $locale = 'french';
+                            break;
+                        default:
+                            $locale = 'english';
+                    }
+                } else {
+                    $locale = $code;
+                }
+                setlocale(LC_ALL, $locale);
                 $dependencyInjectionContainer->get('router')->addPrefix($urlPrefix);
             }
         }
