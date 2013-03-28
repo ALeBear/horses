@@ -131,17 +131,17 @@ abstract class AbstractController
             : '';
         $jsActionFile = sprintf('/js/%s.%s.js', $this->request->attributes->get('MODULE'), ucfirst($this->request->attributes->get('ACTION')));
         file_exists(sprintf('%s%s', $this->request->attributes->get('DIR_HTDOCS'), $jsActionFile))
-            && $this->javascripts[] = $urlPrefix . $jsActionFile;
+            && $this->javascripts[] = $jsActionFile;
         $cssActionFile = sprintf('/css/%s.%s.css',$this->request->attributes->get('MODULE'), ucfirst($this->request->attributes->get('ACTION')));
         file_exists(sprintf('%s%s', $this->request->attributes->get('DIR_HTDOCS'), $cssActionFile))
-            && $this->css[] = $urlPrefix . $cssActionFile;
+            && $this->css[] = $cssActionFile;
         
         $this->metas['javascripts'] = $this->metas['css'] = '';
         foreach ($this->javascripts as $script) {
-            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s%s"></script>%s', $this->view->urlPrefix, $script, "\n");
+            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s%s"></script>%s', substr($script, 0, 4) == 'http' ? '' : $this->view->urlPrefix, $script, "\n");
         }
         foreach ($this->css as $css) {
-            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', $this->view->urlPrefix, $css, "\n");
+            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', substr($script, 0, 4) == 'http' ? '' : $this->view->urlPrefix, $css, "\n");
         }
         
         return $this;
