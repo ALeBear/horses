@@ -55,7 +55,7 @@ class Auth
      * @param string $password
      * @return string
      */
-    public function getPasswordHash($password)
+    public static function getPasswordHash($password)
     {
         return sha1($password);
     }
