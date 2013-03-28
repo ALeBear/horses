@@ -79,6 +79,22 @@ abstract class AbstractUser
     }
     
     /**
+     * Resets the password to a new one, set the hash in the object and return
+     * the password (to include in an email presumably)
+     * @return string
+     */
+    public function resetPassword()
+    {
+        $pass = '';
+        for ($i = 0; $i < mt_rand(6, 9); $i++) {
+            $pass .= chr(mt_rand(33, 122));
+        }
+        $this->passwordHash = Auth::getPasswordHash($pass);
+        
+        return $pass;
+    }
+    
+    /**
      * @return string
      */
     public function __toString()
