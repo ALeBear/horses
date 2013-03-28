@@ -141,7 +141,7 @@ abstract class AbstractController
             $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s%s"></script>%s', substr($script, 0, 4) == 'http' ? '' : $this->view->urlPrefix, $script, "\n");
         }
         foreach ($this->css as $css) {
-            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', substr($script, 0, 4) == 'http' ? '' : $this->view->urlPrefix, $css, "\n");
+            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', substr($css, 0, 4) == 'http' ? '' : $this->view->urlPrefix, $css, "\n");
         }
         
         return $this;
