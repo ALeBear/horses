@@ -90,6 +90,7 @@ abstract class AbstractController
         $this->request = $request;
         $this->response = $response;
 
+        $this->view->routingPrefix = $this->router->getPrefix();
         $this->callMagicMethod('prepare');
         $this->request->isMethod('post') && $this->callMagicMethod('post');
         $this->callMagicMethod('execute', true)->render();
@@ -133,10 +134,10 @@ abstract class AbstractController
         
         $this->metas['javascripts'] = $this->metas['css'] = '';
         foreach ($this->javascripts as $script) {
-            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s"></script>%s', $script, "\n");
+            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s%s"></script>%s', $this->router->getPrefix(), $script, "\n");
         }
         foreach ($this->css as $css) {
-            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s" />%s', $css, "\n");
+            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', $this->router->getPrefix(), $css, "\n");
         }
         
         return $this;
