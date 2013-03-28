@@ -87,4 +87,16 @@ class Auth
         
         return $this;
     }
+    
+    /**
+     * @param \Symfony\Component\HttpFoundation\Session $session
+     * @return \horses\plugin\auth\Auth $this
+     */
+    public function removeUserFromSession(Session $session)
+    {
+        $session->set('email', null);
+        $session->set('passwordHash', null);
+        
+        return $this;
+    }
 }
