@@ -20,6 +20,7 @@ use ReflectionMethod;
 abstract class AbstractController
 {
     const DEFAULT_METAS = 'title=,charset=utf-8';
+    
     /**
      * @var \Symfony\Component\HttpFoundation\Request 
      */
@@ -56,12 +57,14 @@ abstract class AbstractController
     /**
      * The javascript files. A variable named $javascripts will be extracted to
      * the layout and view
+     * @var array
      */
     protected $javascripts = array();
     
     /**
      * The css files. A variable named $css will be extracted to
      * the layout and view
+     * @var array
      */
     protected $css = array();
     
@@ -75,6 +78,8 @@ abstract class AbstractController
         $this->dependencyInjectionContainer = $dependencyInjectionContainer;
         $this->router = $this->dependencyInjectionContainer->get('router');
         $this->view = $view;
+        $this->view->urlPrefix = $dependencyInjectionContainer->get('config')->get('kernel.urlPrefix');
+        $this->view->urlPrefix && $this->view->urlPrefix = '/' . $this->view->urlPrefix;
         $this->metas = array_merge(array_reduce(
                 explode(',', self::DEFAULT_METAS),
                 function (&$result, $elt) { list($key, $val) = explode('=', $elt); $result[$key] = $val; return $result; }, array()),
@@ -90,7 +95,6 @@ abstract class AbstractController
         $this->request = $request;
         $this->response = $response;
 
-        $this->view->routingPrefix = $this->router->getPrefix();
         $this->callMagicMethod('prepare');
         $this->request->isMethod('post') && $this->callMagicMethod('post');
         $this->callMagicMethod('execute', true)->render();
@@ -134,10 +138,10 @@ abstract class AbstractController
         
         $this->metas['javascripts'] = $this->metas['css'] = '';
         foreach ($this->javascripts as $script) {
-            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s%s"></script>%s', $this->router->getPrefix(), $script, "\n");
+            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s%s"></script>%s', $this->view->urlPrefix, $script, "\n");
         }
         foreach ($this->css as $css) {
-            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', $this->router->getPrefix(), $css, "\n");
+            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', $this->view->urlPrefix, $css, "\n");
         }
         
         return $this;
