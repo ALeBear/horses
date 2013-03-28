@@ -32,9 +32,7 @@ class Plugin implements IPlugin
             ->add('kernel', new KernelConfig('kernel.yml', $loader))
             ->add('view', new ViewConfig('view.yml', $loader)));
         $request->attributes->set('DIR_HTDOCS', $request->attributes->get('DIR_BASE') . '/' . $dependencyInjectionContainer->get('config')->get('kernel.htdocsDir'));
-        $router = new Router();
-        $dependencyInjectionContainer->get('config')->get('kernel.urlPrefix') && $router->addPrefix($dependencyInjectionContainer->get('config')->get('kernel.urlPrefix'));
-        $dependencyInjectionContainer->set('router', $router);
+        $dependencyInjectionContainer->set('router', new Router());
     }
     
     public function dispatch(Request $request, Container $dependencyInjectionContainer)

@@ -14,7 +14,6 @@ class KernelConfig extends ConfigAbstract
             ->children()
                 ->scalarNode('debug')->defaultFalse()->end()
                 ->scalarNode('htdocsDir')->isRequired()->end()
-                ->scalarNode('urlPrefix')->end()
             ->end();
 
         return $treeBuilder;

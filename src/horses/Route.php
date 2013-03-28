@@ -50,10 +50,9 @@ class Route
     public function getUrl()
     {
         list($module, $action) = explode('/', $this->route, 2);
-        $prefix = isset($this->options['prefix']) ? trim($this->options['prefix'], '/') : '';
-        $path = sprintf('%s/%s',
-            $prefix ? '/' . $prefix : '',
-            $module ?: self::DEFAULT_MODULE);
+        $prefix = isset($this->options['prefix']) ? '/' . trim($this->options['prefix'], '/') : '';
+        $rootPath = sprintf('%s/%s', $prefix, self::DEFAULT_MODULE);
+        $path = sprintf('%s/%s', $prefix, $module ?: self::DEFAULT_MODULE);
         
         //Add action only if not the default and no query params
         if (($action && $action != self::DEFAULT_ACTION) || count($this->query)) {
@@ -61,6 +60,11 @@ class Route
             foreach ($this->query as $name => $value) {
                 $path .= sprintf('/%s/%s', $name, urlencode($value));
             }
+        }
+        
+        //Remove default module
+        if ($path == $rootPath) {
+            $path = $prefix;
         }
         
         if (isset($this->options['absolute']) && $this->options['absolute']) {

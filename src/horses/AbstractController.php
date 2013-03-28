@@ -78,8 +78,6 @@ abstract class AbstractController
         $this->dependencyInjectionContainer = $dependencyInjectionContainer;
         $this->router = $this->dependencyInjectionContainer->get('router');
         $this->view = $view;
-        $this->view->urlPrefix = $dependencyInjectionContainer->get('config')->get('kernel.urlPrefix');
-        $this->view->urlPrefix && $this->view->urlPrefix = '/' . $this->view->urlPrefix;
         $this->metas = array_merge(array_reduce(
                 explode(',', self::DEFAULT_METAS),
                 function (&$result, $elt) { list($key, $val) = explode('=', $elt); $result[$key] = $val; return $result; }, array()),
@@ -126,9 +124,6 @@ abstract class AbstractController
     protected function prepareMetas()
     {
         //Add action files if they exists
-        $urlPrefix = $this->dependencyInjectionContainer->get('config')->get('kernel.urlPrefix')
-            ? '/' . $this->dependencyInjectionContainer->get('config')->get('kernel.urlPrefix')
-            : '';
         $jsActionFile = sprintf('/js/%s.%s.js', $this->request->attributes->get('MODULE'), ucfirst($this->request->attributes->get('ACTION')));
         file_exists(sprintf('%s%s', $this->request->attributes->get('DIR_HTDOCS'), $jsActionFile))
             && $this->javascripts[] = $jsActionFile;
@@ -138,10 +133,10 @@ abstract class AbstractController
         
         $this->metas['javascripts'] = $this->metas['css'] = '';
         foreach ($this->javascripts as $script) {
-            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s%s"></script>%s', substr($script, 0, 4) == 'http' ? '' : $this->view->urlPrefix, $script, "\n");
+            $this->metas['javascripts'] .= sprintf('<script type="text/javascript" src="%s"></script>%s', $script, "\n");
         }
         foreach ($this->css as $css) {
-            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s%s" />%s', substr($css, 0, 4) == 'http' ? '' : $this->view->urlPrefix, $css, "\n");
+            $this->metas['css'] .= sprintf('<link rel="stylesheet" type="text/css" href="%s" />%s', $css, "\n");
         }
         
         return $this;
