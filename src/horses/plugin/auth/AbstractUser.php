@@ -33,25 +33,27 @@ abstract class AbstractUser
     protected $passwordHash;
     
     /**
+     * @param string $name
      * @param string $email
-     * @param string $passwordHash
+     * @param string $password
      */
-    protected function __construct($name, $email, $passwordHash)
+    protected function __construct($name, $email, $password)
     {
         $this->name = $name;
         $this->email = $email;
-        $this->passwordHash = $passwordHash;
+        $this->passwordHash = Auth::getPasswordHash($password);
     }
     
     /**
-     * Retruns a brand new user, not saved in DB
+     * Retruns a brand new user, not saved in DB yet
+     * @param string $name
      * @param string $email
-     * @param string $passwordHash
+     * @param string $password
      * @return User
      */
-    public static function create($name, $email, $passwordHash)
+    public static function create($name, $email, $password)
     {
-        return new static($name, $email, $passwordHash);
+        return new static($name, $email, $password);
     }
     
     /**
@@ -76,6 +78,39 @@ abstract class AbstractUser
     public function getPasswordHash()
     {
         return $this->passwordHash;
+    }
+    
+    /**
+     * @param string $name
+     * @param string $email
+     * @return \horses\plugin\auth\AbstractUser
+     */
+    public function updateData($name, $email)
+    {
+        $this->name = $name;
+        $this->email = $email;
+        
+        return $this;
+    }
+    
+    /**
+     * @param string $password
+     * @return \horses\plugin\auth\AbstractUser
+     */
+    public function updatePassword($password)
+    {
+        $this->passwordHash = Auth::getPasswordHash($password);
+        
+        return $this;
+    }
+    
+    /**
+     * @param string $password
+     * @return boolean
+     */
+    public function isPasswordValid($password)
+    {
+        return $this->passwordHash == Auth::getPasswordHash($password);
     }
     
     /**
