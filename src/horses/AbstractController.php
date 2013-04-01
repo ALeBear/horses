@@ -211,6 +211,17 @@ abstract class AbstractController
     }
     
     /**
+     * Locates a partial, which can then be included. Located at
+     * application/controller/horses_partials/$name.php
+     * @param string $name
+     * @return string
+     */
+    public function getPartialFile($name)
+    {
+        return sprintf('%s/horses_partials/%s.php', $this->request->attributes->get('DIR_CONTROLLERS'), $name);
+    }
+    
+    /**
      * Calls a magic method, one where the user can declare parameters and they
      * will be taken from request (aka query string)
      * @param string $name
