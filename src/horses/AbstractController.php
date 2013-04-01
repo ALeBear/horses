@@ -181,13 +181,36 @@ abstract class AbstractController
     }
     
     /**
-     * Translates a string. You can pass more parameters, they will be sprintf'ed
+     * Translates a string. You can pass more parameters, they will be
+     * sprintf'ed.
+     * If locale plugin not loaded, will return the token.
      * @param string $token
      * @return string
      */
     public function _($token)
     {
-        return call_user_func_array(array($this->dependencyInjectionContainer->get('locale'), '_'), func_get_args());
+        $locale = $this->dependencyInjectionContainer->get('locale', Container::NULL_ON_INVALID_REFERENCE);
+        return $locale ? call_user_func_array(array($locale, '_'), func_get_args()) : $token;
+    }
+    
+    /**
+     * Gets the entity manager if doctrine plugin was loaded
+     * @return \Doctrine\ORM\EntityManager Null if plugin doctrine not loaded
+     */
+    public function getEntityManager()
+    {
+        return $this->dependencyInjectionContainer->get('entity_manager', Container::NULL_ON_INVALID_REFERENCE);
+        
+    }
+    
+    /**
+     * Gets the global config
+     * @return \Symfony\Component\Config\IQueryableConfig
+     */
+    public function getConfig()
+    {
+        return $this->dependencyInjectionContainer->get('config');
+        
     }
     
     /**
