@@ -200,7 +200,6 @@ abstract class AbstractController
     public function getEntityManager()
     {
         return $this->dependencyInjectionContainer->get('entity_manager', Container::NULL_ON_INVALID_REFERENCE);
-        
     }
     
     /**
@@ -210,7 +209,6 @@ abstract class AbstractController
     public function getConfig()
     {
         return $this->dependencyInjectionContainer->get('config');
-        
     }
     
     /**
