@@ -8,14 +8,20 @@ use Symfony\Component\HttpFoundation\Response;
 use ReflectionMethod;
 
 /**
- * Parent class of controllers. Subclasses must implement the execute() method.
- * (and optionnally the prepare() and post() method).
+ * Parent class of controllers. Subclasses may implement one of the following
+ * methods (will be executed in this order):
+ * - prepare()
+ * - post() (only called if this is a post request)
+ * - execute()
+ * - prepareView()
  * These methods are magic: if you declare parameters, the dispatch will try to
  * find variables with the same name in the query and pass them, otherwise
  * will pass the declared default.
  * CAUTION! A parameter with no default value will be mandatory and the
  * dispatch will produce a KernelPanicException if not found in request.
- * Between prepare() and execute(), post() will be called if it's a post request
+ * 
+ * Do not forget the filterMagicParam() method which will be called first before
+ * passing the params to the magic methods
  */
 abstract class AbstractController
 {
@@ -93,9 +99,27 @@ abstract class AbstractController
         $this->request = $request;
         $this->response = $response;
 
-        $this->callMagicMethod('prepare');
-        $this->request->isMethod('post') && $this->callMagicMethod('post');
-        $this->callMagicMethod('execute', true)->render();
+        $params = array();
+        foreach ($this->request->query->all() as $name => $value) {
+            $params[$name] = $this->filterMagicParam($name, $value);
+        }
+        $this->callMagicMethod('prepare', $params);
+        $this->request->isMethod('post') && $this->callMagicMethod('post', $params);
+        $this->callMagicMethod('execute', $params)
+            ->callMagicMethod('prepareView', $params)
+            ->render();
+    }
+    
+    /**
+     * Used to filter query (and path) parameters before passing them to magic
+     * methods
+     * @param string $name
+     * @param mixed $value
+     * @return mixed the filtered out value
+     */
+    public function filterMagicParam($name, $value)
+    {
+        return $value;
     }
     
     /**
@@ -103,6 +127,10 @@ abstract class AbstractController
      */
     public function render()
     {
+        if (!$this->hasView()) {
+            exit;
+        }
+        
         //Process view file
         ob_start();
         extract($this->prepareMetas()->metas);
@@ -156,6 +184,15 @@ abstract class AbstractController
     public function getAction()
     {
         return $this->request->attributes->get('ACTION');
+    }
+    
+    /**
+     * Does this controller have a view?
+     * @return boolean
+     */
+    public function hasView()
+    {
+        return true;
     }
 
     /**
@@ -246,25 +283,21 @@ abstract class AbstractController
      * Calls a magic method, one where the user can declare parameters and they
      * will be taken from request (aka query string)
      * @param string $name
-     * @param boolean $mandatory
+     * @param $availableParams $params the parameters available for the methods
      * @return \horses\AbstractController
      * @throws KernelPanicException If a param is mandatory and not found in request
-     * @throws KernelPanicException If a mandatory method does not exist
      */
-    protected function callMagicMethod($name, $mandatory = false)
+    protected function callMagicMethod($name, $availableParams)
     {
         if (!method_exists($this, $name)) {
-            if ($mandatory) {
-                throw new KernelPanicException(sprintf('Method missing from controller %s->%s()', get_class($this), $name));
-            }
             return $this;
         }
         
         $reflectionMethod = new ReflectionMethod($this, $name);
         $params = array();
         foreach ($reflectionMethod->getParameters() as $param) {
-            if ($this->request->query->has($param->getName())) {
-                $params[] = $this->request->query->get($param->getName());
+            if (isset($availableParams[$param->getName()])) {
+                $params[] = $availableParams[$param->getName()];
             } else {
                 if (!$param->isDefaultValueAvailable()) {
                     throw new KernelPanicException(sprintf('Parameter missing for action "%s": %s', $this->request->attributes->get('ROUTE'), $param->getName()));

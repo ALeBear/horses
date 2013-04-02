@@ -47,14 +47,7 @@ class Plugin implements IPlugin
         }
         require $controllerFile;
         
-        //Verify view and layout files
-        $viewFile = sprintf('%s/%s/%s-view.php',
-            $request->attributes->get('DIR_CONTROLLERS'),
-            $request->attributes->get('MODULE'),
-            ucfirst($request->attributes->get('ACTION')));
-        if (!is_file($viewFile)) {
-            throw new KernelPanicException(sprintf('View not found: %s', $viewFile));
-        }
+        //Verify layout file
         $conf = $dependencyInjectionContainer->get('config');
         $layoutFile = sprintf('%s/%s',
             $request->attributes->get('DIR_APPLICATION'),
@@ -68,12 +61,19 @@ class Plugin implements IPlugin
             throw new KernelPanicException(sprintf('Controller class not declared: %s', $controllerClass));
         }
         
+        $viewFile = sprintf('%s/%s/%s-view.php',
+            $request->attributes->get('DIR_CONTROLLERS'),
+            $request->attributes->get('MODULE'),
+            ucfirst($request->attributes->get('ACTION')));
         $controller = new $controllerClass($dependencyInjectionContainer, new View($viewFile, $layoutFile));
-        if (!method_exists($controllerClass, 'execute')) {
-            throw new KernelPanicException(sprintf('Controller class must declare an "execute" method: %s', $controllerClass));
-        }
         if (!($controller instanceof AbstractController)) {
             throw new KernelPanicException(sprintf('Controller class must be a subclass of AbstractController: %s', $controllerClass));
+        }
+        //Verify view file
+        if ($controller->hasView()) {
+            if (!is_file($viewFile)) {
+                throw new KernelPanicException(sprintf('View not found: %s', $viewFile));
+            }
         }
         
         //Launch the real dispatch process
