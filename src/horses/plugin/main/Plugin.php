@@ -49,11 +49,16 @@ class Plugin implements IPlugin
         
         //Verify layout file
         $conf = $dependencyInjectionContainer->get('config');
-        $layoutFile = sprintf('%s/%s',
-            $request->attributes->get('DIR_APPLICATION'),
-            $conf->get(sprintf('view.layout.%s', $request->attributes->get('ROUTE'))) ? : $conf->get('view.layout.default'));
-        if (!is_file($layoutFile)) {
-            throw new KernelPanicException(sprintf('Layout not found: %s', $layoutFile));
+        $layoutDefinition = $conf->get(sprintf('view.layout.%s', $request->attributes->get('ROUTE'))) ?: $conf->get('view.layout.default');
+        if ($layoutDefinition == 'none') {
+            $layoutFile = null;
+        } else {
+            $layoutFile = sprintf('%s/%s',
+                $request->attributes->get('DIR_APPLICATION'),
+                $layoutDefinition);
+            if (!is_file($layoutFile)) {
+                throw new KernelPanicException(sprintf('Layout not found: %s', $layoutFile));
+            }
         }
         
         $controllerClass = sprintf('\\horses\\controller\\%s\\%s', $request->attributes->get('MODULE'), ucfirst($request->attributes->get('ACTION')));
