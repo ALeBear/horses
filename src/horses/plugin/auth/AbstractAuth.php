@@ -4,7 +4,7 @@ namespace horses\plugin\auth;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 
-abstract class Auth
+abstract class AbstractAuth
 {
     /**
      * @var string
