@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use horses\IPlugin;
 use horses\KernelPanicException;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Request;
 
 class Plugin implements IPlugin

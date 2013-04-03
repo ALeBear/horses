@@ -4,7 +4,6 @@ namespace horses\plugin\auth;
 
 use horses\IPlugin;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpFoundation\Request;
 
 class Plugin implements IPlugin
