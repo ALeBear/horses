@@ -1,0 +1,11 @@
+#mysql conf
+mysql:
+  host: 
+  username: 
+  password: 
+  dbname: 
+
+#Doctrine 2.0 conf
+doctrine:
+  driver: pdo_mysql
+

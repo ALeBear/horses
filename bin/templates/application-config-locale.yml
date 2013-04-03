@@ -1,0 +1,5 @@
+#list of your available locales (keys) with the corresponding url prefix (values)
+available:
+  en_CA: en
+  fr_CA: fr
+  

@@ -1,15 +1,15 @@
 <?php
 
 /**
- * This file creates the scaffolding needed to have a functional horses
- * application.
+ * This file creates or updates the scaffolding needed to have a functional
+ * horses application.
  * 
  * Parameters:
  * -d path/to/dir #The root dir of your app, optional, default is current dir
  * -m doctrine,auth,locale #The modules you want to use in your app. These are the classic default
  */
 
-$options = getopt(array('d:m::'));
+$options = getopt('d:m::');
 
 if (!isset($options['m'])) {
     throw new InvalidArgumentException('"m" parameter mandatory for modules you want included, no value if none wanted');
@@ -43,21 +43,37 @@ if (in_array('doctrine', $modules)) {
 }
 
 //Create dirs and files
-createStructure($structure, isset($options['d']) ? $options['d'] : '.');
+$path = isset($options['d']) ? $options['d'] : '.';
+createStructure($structure, $path, $path);
 
 
-function createStructure($level, $previousDirs) {
+function createStructure($level, $previousDirs, $originalPath) {
     foreach ($level as $index => $value) {
         if (substr($index, -1) == '/') {
             //Directory in the index, subdirs/files in the value as array
-            mkdir(sprintf('%s/%s', $previousDirs, trim($index, '/')));
+            $currentDir = sprintf('%s/%s', $previousDirs, trim($index, '/'));
+            file_exists($currentDir) || mkdir($currentDir);
             
             if (is_array($value)) {
-                createStructure($value);
+                createStructure($value, $currentDir, $originalPath);
             }
         } else {
             //File, in the value
+            $file = sprintf('%s/%s', $previousDirs, $value);
+            if (file_exists($file)) {
+                return;
+            }
             
+            //Try to find one in horses as a template, otherwise empty file
+            $fileToCopy = sprintf('%s/vendor/alebear/horses/bin/templates/%s-%s',
+                $originalPath,
+                substr(str_replace('/', '-', $previousDirs), strlen($originalPath) + 1),
+                $value);
+            if (file_exists($fileToCopy)) {
+                copy($fileToCopy, $file);
+            } else {
+                touch($file)
+            }
         }
     }
 }

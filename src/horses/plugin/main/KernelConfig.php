@@ -12,7 +12,6 @@ class KernelConfig extends ConfigAbstract
         $treeBuilder = new TreeBuilder();
         $treeBuilder->root('kernel')
             ->children()
-                ->scalarNode('debug')->defaultFalse()->end()
                 ->scalarNode('htdocsDir')->isRequired()->end()
             ->end();
 

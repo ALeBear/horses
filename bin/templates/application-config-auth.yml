@@ -1,0 +1,10 @@
+#Your user class, subclass of horses\plugin\auth\AbstractUser
+userClassname: myNamespace\User
+
+#module/action to redirect to if user is not logged in
+noAuthRedirect: auth/login
+
+#Auth not enabled on these module/action
+disableAuth:
+  - auth/login
+  - auth/register
