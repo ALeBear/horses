@@ -25,11 +25,15 @@ class Plugin implements IPlugin
     
     public function dispatch(Request $request, Container $dependencyInjectionContainer)
     {
+        if ($request->attributes->get('BOOTSTRAP_ONLY')) {
+            return;
+        }
+        
         //Redirect if page is protected
         $config = $dependencyInjectionContainer->get('config');
-        if (!$dependencyInjectionContainer->has('user')
-            && !in_array($request->attributes->get('ROUTE'), $config->get('auth.disableAuth', array()))
-            && !$request->attributes->get('BOOTSTRAP_ONLY')) {
+        $authInverted = in_array($request->attributes->get('ROUTE'), $config->get('auth.invertAuth', array()));
+        $shouldAuth = $config->get('auth.mode') == 'defaultOpen' ? $authInverted : !$authInverted;
+        if ($shouldAuth && !$dependencyInjectionContainer->has('user')) {
             header(sprintf('Location: %s', $dependencyInjectionContainer->get('router')->buildRoute($config->get('auth.noAuthRedirect'))->getUrl()));
             exit;
         }

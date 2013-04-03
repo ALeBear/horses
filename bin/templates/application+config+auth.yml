@@ -1,10 +1,13 @@
 #Your user class, subclass of horses\plugin\auth\AbstractUser
 userClassname: myNamespace\User
 
+#Auth mode for controllers, one of defaultProtected, defaultOpen
+mode: defaultProtected
+
 #module/action to redirect to if user is not logged in
 noAuthRedirect: auth/login
 
-#Auth not enabled on these module/action
-disableAuth:
+#Auth enabled (mode defaultOpen) or disabled (mode defaultProtected) on these module/action
+invertAuth:
   - auth/login
   - auth/register
