@@ -13,7 +13,7 @@ class Config extends ConfigAbstract
         $treeBuilder->root('auth')
             ->children()
                 ->scalarNode('userClassname')->isRequired()->end()
-                ->enumNode('mode')->values('defaultProtected', 'defaultOpen')->isRequired()->end()
+                ->enumNode('mode')->values(array('defaultProtected', 'defaultOpen'))->isRequired()->end()
                 ->scalarNode('noAuthRedirect')->isRequired()->end()
                 ->arrayNode('invertAuth')
                     ->prototype('scalar')->end()
