@@ -34,6 +34,13 @@ class Collection implements IQueryableConfig
         return $this;
     }
 
+    /**
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     * @throws InvalidArgumentException If no section (no dot in $name)
+     * @throws InvalidArgumentException If section not loaded
+     */
     public function get($name, $default = null)
     {
         if (strpos($name, '.') === false) {
@@ -46,6 +53,15 @@ class Collection implements IQueryableConfig
         }
         
         return $this->configs[$section]->get($param, $default);
+    }
+    
+    /**
+     * @param string $name
+     * @return boolean
+     */
+    public function hasSection($name)
+    {
+        return array_key_exists($section, $this->configs);
     }
     
     public function set($name, $value) {}
