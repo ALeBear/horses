@@ -2,7 +2,7 @@
 userClassname: myNamespace\User
 
 #Auth mode for controllers, one of defaultProtected, defaultOpen
-mode: defaultProtected
+mode: defaultOpen
 
 #module/action to redirect to if user is not logged in
 noAuthRedirect: auth/login
