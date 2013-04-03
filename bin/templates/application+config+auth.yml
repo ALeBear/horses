@@ -1,3 +1,6 @@
+#Your auth class, subclass of horses\plugin\auth\Auth
+authClassname: -AUTHCLASS-
+
 #Your user class, subclass of horses\plugin\auth\AbstractUser
 userClassname: myNamespace\User
 

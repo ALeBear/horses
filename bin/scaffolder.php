@@ -55,6 +55,16 @@ if (in_array('doctrine', $modules)) {
 $path = isset($options['d']) ? $options['d'] : '.';
 createStructure($structure, $path, $path);
 
+//Set the default DbAuth if auth + doctrine enabled
+if (in_array('doctrine', $modules) && in_array('auth', $modules)) {
+    $authConfig = sprintf('%s/application/config/auth.yml', $path);
+    if (strpos(file_get_contents($authConfig), '-AUTHCLASS-')) {
+        file_put_contents(
+            $authConfig,
+            str_replace('-AUTHCLASS-', 'horses\\plugin\\doctrine\\DbAuth', file_get_contents($authConfig)));
+    }
+}
+
 //Paste Kernel bootstrap
 $frontController = sprintf('%s/htdocs/index.php', $path);
 if (!strpos(file_get_contents($frontController), 'Kernel::factory')) {

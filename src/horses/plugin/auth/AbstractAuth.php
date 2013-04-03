@@ -2,31 +2,15 @@
 
 namespace horses\plugin\auth;
 
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-class Auth
+abstract class Auth
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
-    protected $em;
-    
     /**
      * @var string
      */
     protected $userClassname;
     
-    
-    /**
-     * @param \Doctrine\ORM\EntityManager $em
-     * @return \horses\plugin\auth\Auth
-     */
-    public function injectEntityManager(EntityManager $em)
-    {
-        $this->em = $em;
-        return $this;
-    }
     
     /**
      * Fully qualified classname
@@ -40,15 +24,12 @@ class Auth
     }
     
     /**
-     * Authenticate a user and returns it
+     * Instantiate a user given the credentials, or return null if not valid
      * @param string $email
      * @param string $passwordHash
      * @return \horses\plugin\auth\AbstractUser
      */
-    public function getUser($email, $passwordHash)
-    {
-        return $this->em->getRepository($this->userClassname)->findOneBy(array('email' => $email, 'passwordHash' => $passwordHash));
-    }
+    abstract public function getUser($email, $passwordHash);
     
     /**
      * Hash a password

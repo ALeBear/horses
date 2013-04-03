@@ -84,4 +84,14 @@ class Plugin implements IPlugin
         //Launch the real dispatch process
         $controller->dispatch($request, new Response('', 200, array('content-type' => 'text/html')));
     }
+    
+    /**
+     * Get the module bootstrap priority, from 0 to 10. 0 = ultra high priority
+     * (do not use), 10 = very low.
+     * @return integer
+     */
+    public function getBootstrapPriority()
+    {
+        return 0;
+    }
 }

@@ -41,9 +41,28 @@ class Plugin implements IPlugin
         }
 
         $dependencyInjectionContainer->set('entity_manager', $em);
+        
+        //Add DbAuth if it's the Auth class (add user too)
+        if ($config->get('auth.authClassname') == 'horses\\plugin\\doctrine\\DbAuth') {
+            $dependencyInjectionContainer->register('auth', 'horses\\plugin\\doctrine\\DbAuth')
+                ->addMethodCall('injectEntityManager', array(new Reference('entity_manager')))
+                ->addMethodCall('injectUserClassname', array($config->get('auth.userClassname')));
+
+            $dependencyInjectionContainer->set('user', $dependencyInjectionContainer->get('auth')->getUserFromSession($request->getSession()));
+        }
     }
     
     public function dispatch(Request $request, Container $dependencyInjectionContainer)
     {
+    }
+    
+    /**
+     * Get the module bootstrap priority, from 0 to 10. 0 = ultra high priority
+     * (do not use), 10 = very low.
+     * @return integer
+     */
+    public function getBootstrapPriority()
+    {
+        return 2;
     }
 }

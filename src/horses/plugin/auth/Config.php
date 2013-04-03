@@ -12,6 +12,7 @@ class Config extends ConfigAbstract
         $treeBuilder = new TreeBuilder();
         $treeBuilder->root('auth')
             ->children()
+                ->scalarNode('authClassname')->isRequired()->end()
                 ->scalarNode('userClassname')->isRequired()->end()
                 ->enumNode('mode')->values(array('defaultProtected', 'defaultOpen'))->isRequired()->end()
                 ->scalarNode('noAuthRedirect')->isRequired()->end()

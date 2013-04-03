@@ -59,6 +59,7 @@ class Kernel
             $DIContainer = new ContainerBuilder();
 
             //Bootstrap
+            uasort($plugins, function ($e1, $e2) { return $e1->getBootstrapPriority() < $e2->getBootstrapPriority() ? -1 : 1; });
             $mainPlugin->bootstrap($request, $DIContainer);
             foreach ($plugins as $plugin) {
                 $plugin->bootstrap($request, $DIContainer);
@@ -96,8 +97,6 @@ class Kernel
      */
     protected function instantiatePlugins($pluginsList)
     {
-        
-        $plugins = array();
         foreach (array_unique(array_merge(explode(',', self::MANDATORY_PLUGINS), $pluginsList)) as $plugin) {
             $class = strpos($plugin, '\\') === false
                 ? sprintf('horses\\plugin\\%s\\Plugin', $plugin)

@@ -14,13 +14,6 @@ class Plugin implements IPlugin
         /* @var $config Symfony\Component\Config\Collection */
         $config = $dependencyInjectionContainer->get('config');
         $config->add('auth', new Config('auth.yml', $dependencyInjectionContainer->get('config_loader')));
-
-        $dependencyInjectionContainer->register('auth', 'horses\\plugin\\auth\\Auth')
-            ->addMethodCall('injectEntityManager', array(new Reference('entity_manager')))
-            ->addMethodCall('injectUserClassname', array($config->get('auth.userClassname')));
-
-        $user = $dependencyInjectionContainer->get('auth')->getUserFromSession($request->getSession());
-        $dependencyInjectionContainer->set('user', $user);
     }
     
     public function dispatch(Request $request, Container $dependencyInjectionContainer)
@@ -37,5 +30,15 @@ class Plugin implements IPlugin
             header(sprintf('Location: %s', $dependencyInjectionContainer->get('router')->buildRoute($config->get('auth.noAuthRedirect'))->getUrl()));
             exit;
         }
+    }
+    
+    /**
+     * Get the module bootstrap priority, from 0 to 10. 0 = ultra high priority
+     * (do not use), 10 = very low.
+     * @return integer
+     */
+    public function getBootstrapPriority()
+    {
+        return 1;
     }
 }
