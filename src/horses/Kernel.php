@@ -31,7 +31,7 @@ class Kernel
     /**
      * @param string $baseDir The base directory, usually the parent directory of it all
      * @param string[] $plugins Class names (no namespacing = horses's natives)
-     * @param boolean $bootstrapOnly Only a bootstrap if set to true
+     * @param boolean $bootstrapOnly Only a bootstrap if set to true, no dispatch
      * @return Symfony\Component\DependencyInjection\Container
      * @throws InvalidArgumentException When a plugin file is not found
      */

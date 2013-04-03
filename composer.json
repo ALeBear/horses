@@ -19,6 +19,7 @@
         "symfony/http-foundation": "2.2.*",
         "phpunit/phpunit": "3.7.*"
     },
+    "bin": ["bin/scaffolder", "bin/scaffolder.php"],
     "autoload": {
         "psr-0": {
             "horses": "src",
