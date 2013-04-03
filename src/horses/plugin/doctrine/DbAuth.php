@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\plugin\auth;
+namespace horses\plugin\doctrine;
 
 use Doctrine\ORM\EntityManager;
 use horses\plugin\auth\AbstractAuth;
