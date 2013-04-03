@@ -19,28 +19,50 @@ $structure = array(
             'kernel.yml',
             'view.yml'
         ),
-        'controller/' => array('horses_partials/' => null),
+        'controller/' => array(
+            'horses_partials/' => null,
+            'defaulter/' => array(
+                'Index.php',
+                'Index-view.php'
+            )
+        ),
         'layout.php'
     ),
     'lib/' => null,
-    'htdocs/' => null
+    'htdocs/' => array(
+        'index.php',
+        '404.php',
+        '500.php',
+        '.htaccess'
+    )
 );
 
 if (in_array('locale', $modules)) {
     $structure['application/']['config/'][] = 'locale.yml';
+    $structure['application/']['controller/'][] = 'common-dict.en_US.ini';
+    $structure['application/']['controller/']['defaulter'][] = 'Index-dict.en_US.ini';
 }
 if (in_array('auth', $modules)) {
     $structure['application/']['config/'][] = 'auth.yml';
 }
 if (in_array('doctrine', $modules)) {
     $structure['application/']['config/'][] = 'db.yml';
-    $structure['application/'][] = 'doctrineProxies/';
+    $structure['application/'][] = array('doctrineProxies/' => array());
     $structure[] = 'cli-config.php';
 }
 
 //Create dirs and files
 $path = isset($options['d']) ? $options['d'] : '.';
 createStructure($structure, $path, $path);
+
+//Paste Kernel bootstrap
+$frontController = sprintf('%s/htdocs/index.php', $path);
+if (!strpos(file_get_contents($frontController), 'Kernel::factory')) {
+    file_put_contents(
+        $frontController,
+        sprintf("Kernel::factory()->run(__DIR__ . '/..', array(%s));", count($modules) ? "'" . implode("', '", $modules) : ''),
+        $flags);
+}
 
 
 function createStructure($level, $previousDirs, $originalPath) {
@@ -63,7 +85,7 @@ function createStructure($level, $previousDirs, $originalPath) {
             //Try to find one in horses as a template, otherwise empty file
             $fileToCopy = sprintf('%s/vendor/alebear/horses/bin/templates/%s-%s',
                 $originalPath,
-                substr(str_replace('/', '-', $previousDirs), strlen($originalPath) + 1),
+                substr(str_replace('/', '+', $previousDirs), strlen($originalPath) + 1),
                 $value);
             if (file_exists($fileToCopy)) {
                 copy($fileToCopy, $file);
