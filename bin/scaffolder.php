@@ -9,13 +9,9 @@
  * -m doctrine,auth,locale #The modules you want to use in your app. These are the classic default
  */
 
-$options = getopt('d:m::');
+$options = getopt('d:m:');
 
-if (!isset($options['m'])) {
-    throw new InvalidArgumentException('"m" parameter mandatory for modules you want included, no value if none wanted');
-}
-
-$modules = $options['m'] ? explode(',', $options['m']) : array();
+$modules = isset($options['m']) ? explode(',', $options['m']) : array();
 
 $structure = array(
     'application/' => array(
