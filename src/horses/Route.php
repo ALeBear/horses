@@ -64,7 +64,7 @@ class Route
         
         //Remove default module
         if ($path == $rootPath) {
-            $path = $prefix;
+            $path = $prefix ?: '/';
         }
         
         if (isset($this->options['absolute']) && $this->options['absolute']) {
