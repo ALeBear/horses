@@ -61,7 +61,7 @@ class Collection implements IQueryableConfig
      */
     public function hasSection($name)
     {
-        return array_key_exists($section, $this->configs);
+        return array_key_exists($name, $this->configs);
     }
     
     public function set($name, $value) {}
