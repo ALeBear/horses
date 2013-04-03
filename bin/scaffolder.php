@@ -72,7 +72,7 @@ function createStructure($level, $previousDirs, $originalPath) {
             if (file_exists($fileToCopy)) {
                 copy($fileToCopy, $file);
             } else {
-                touch($file)
+                touch($file);
             }
         }
     }
