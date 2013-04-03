@@ -139,10 +139,14 @@ abstract class AbstractController
         $content = ob_get_clean();
         
         //Process layout
-        ob_start();
-        extract(array($content));
-        require $this->view->getLayoutFile();
-        $this->response->setContent(ob_get_clean());
+        if ($this->view->getLayoutFile()) {
+            ob_start();
+            extract(array($content));
+            require $this->view->getLayoutFile();
+            $this->response->setContent(ob_get_clean());
+        } else {
+            $this->response->setContent($content);
+        }
         $this->response->send();
     }
     
