@@ -1,9 +1,11 @@
 #declare your layouts here
 layout:
   #This one if none declared later
-  default: layout-main.php
+  default: layout.php
+  
   #key is module/action
   #mod/act: layout-other.php
+  
   #For actions without a layout (still can have a view)
   #mod2/act2: none
   
