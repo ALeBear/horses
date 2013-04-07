@@ -41,7 +41,7 @@ abstract class AbstractUser
     {
         $this->name = $name;
         $this->email = $email;
-        $this->passwordHash = Auth::getPasswordHash($password);
+        $this->passwordHash = AbstractAuth::getPasswordHash($password);
     }
     
     /**
@@ -99,7 +99,7 @@ abstract class AbstractUser
      */
     public function updatePassword($password)
     {
-        $this->passwordHash = Auth::getPasswordHash($password);
+        $this->passwordHash = AbstractAuth::getPasswordHash($password);
         
         return $this;
     }
@@ -110,7 +110,7 @@ abstract class AbstractUser
      */
     public function isPasswordValid($password)
     {
-        return $this->passwordHash == Auth::getPasswordHash($password);
+        return $this->passwordHash == AbstractAuth::getPasswordHash($password);
     }
     
     /**
@@ -124,7 +124,7 @@ abstract class AbstractUser
         for ($i = 0; $i < mt_rand(6, 9); $i++) {
             $pass .= chr(mt_rand(33, 122));
         }
-        $this->passwordHash = Auth::getPasswordHash($pass);
+        $this->passwordHash = AbstractAuth::getPasswordHash($pass);
         
         return $pass;
     }
