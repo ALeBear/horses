@@ -16,6 +16,7 @@ class Router
      */
     protected $prefixes = array();
 
+    
     /**
      * Do the routing, i.e. set ROUTE/MODULE/ACTION request attribute
      * (ROUTE = "controller/action") and reinject parameters passed in path
@@ -46,10 +47,12 @@ class Router
 
     /**
      * @param string $prefix
+     * @return \horses\Router $this
      */
     public function addPrefix($prefix)
     {
-        $this->prefixes[] = $prefix;
+        (string) $prefix !== '' && $this->prefixes[] = $prefix;
+        return $this;
     }
 
     /**

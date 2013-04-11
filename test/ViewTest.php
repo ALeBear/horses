@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\tests;
+namespace horses\test;
 
 use PHPUnit_Framework_TestCase;
 use horses\View;

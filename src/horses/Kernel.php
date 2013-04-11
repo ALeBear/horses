@@ -11,6 +11,11 @@ use Exception;
 class Kernel
 {
     /**
+     * @var string The name of the default environement
+     */
+    const DEFAULT_ENV = 'prod';
+
+    /**
      * @var string The name of the main plugin
      */
     const MAIN_PLUGIN = 'main';
@@ -19,6 +24,23 @@ class Kernel
      * @var string List of mandatory modules separated by commas
      */
     const MANDATORY_PLUGINS = 'main';
+
+    
+    /**
+     * @var horses\PluginLocator 
+     */
+    protected $pluginLocator;
+    
+    /**
+     * @var Symfony\Component\HttpFoundation\Request 
+     */
+    protected $request;
+    
+    /**
+     * @var Symfony\Component\HttpFoundation\Session\Session
+     */
+    protected $session;
+    
     
     /**
      * @return \horses\Kernel
@@ -30,7 +52,7 @@ class Kernel
     
     /**
      * @param string $baseDir The base directory, usually the parent directory of it all
-     * @param string[] $plugins Class names (no namespacing = horses's natives)
+     * @param string[] $plugins Class names (no namespacing = horses' core plugin)
      * @param boolean $bootstrapOnly Only a bootstrap if set to true, no dispatch
      * @return Symfony\Component\DependencyInjection\Container
      * @throws InvalidArgumentException When a plugin file is not found
@@ -38,30 +60,31 @@ class Kernel
     public function run($baseDir, array $plugins, $bootstrapOnly = false)
     {
         try {
-            $request = Request::createFromGlobals();
-            $session = new Session();
-            $session->start();
-            $request->setSession($session);
+            $request = $this->getRequest();
+            $request->setSession($this->getSession());
 
             //Set some attributes
             $request->attributes->set('BOOTSTRAP_ONLY', $bootstrapOnly);
-            $request->attributes->set('ENV', isset($_SERVER['ENV']) ? $_SERVER['ENV'] : 'prod');
+            $request->attributes->set('ENV', $request->server->get('ENV', static::DEFAULT_ENV));
             $request->attributes->set('DIR_BASE', $baseDir);
             $request->attributes->set('DIR_APPLICATION', $request->attributes->get('DIR_BASE') . '/application');
             $request->attributes->set('DIR_LIB', $request->attributes->get('DIR_BASE') . '/lib');
             $request->attributes->set('DIR_CONTROLLERS', $request->attributes->get('DIR_APPLICATION') . '/controller');
 
             //Instantiate plugins
-            $plugins = $this->instantiatePlugins($plugins);
-            $mainPlugin = $plugins[self::MAIN_PLUGIN];
-            unset($plugins[self::MAIN_PLUGIN]);
+            $pluginObjs = array();
+            foreach (array_unique(array_merge(explode(',', self::MANDATORY_PLUGINS), $plugins)) as $plugin) {
+                $pluginObjs[$plugin] = $this->getPluginLocator()->locate($plugin);
+            }
+            $mainPlugin = $pluginObjs[self::MAIN_PLUGIN];
+            unset($pluginObjs[self::MAIN_PLUGIN]);
 
             $DIContainer = new ContainerBuilder();
 
             //Bootstrap
-            uasort($plugins, function ($e1, $e2) { return $e1->getBootstrapPriority() < $e2->getBootstrapPriority() ? -1 : 1; });
+            uasort($pluginObjs, function ($e1, $e2) { return $e1->getBootstrapPriority() < $e2->getBootstrapPriority() ? -1 : 1; });
             $mainPlugin->bootstrap($request, $DIContainer);
-            foreach ($plugins as $plugin) {
+            foreach ($pluginObjs as $plugin) {
                 $plugin->bootstrap($request, $DIContainer);
             }
 
@@ -70,7 +93,7 @@ class Kernel
 
             //Dispatch
             if (!$bootstrapOnly) {
-                foreach ($plugins as $plugin) {
+                foreach ($pluginObjs as $plugin) {
                     $plugin->dispatch($request, $DIContainer);
                 }
                 $mainPlugin->dispatch($request, $DIContainer);
@@ -80,30 +103,85 @@ class Kernel
         } catch (Kernel404Exception $e) {
             $errorFile = sprintf('%s/404.php', str_replace('//', '', $_SERVER['DOCUMENT_ROOT']));
             if (file_exists($errorFile)) {
+                header('HTTP/1.0 404 Not Found');
                 require $errorFile;
+            } else {
+                throw $e;
             }
         } catch (Exception $e) {
             $errorFile = sprintf('%s/500.php', str_replace('//', '', $_SERVER['DOCUMENT_ROOT']));
             if (file_exists($errorFile)) {
+                header('HTTP/1.0 500 Internal Server Error');
                 require $errorFile;
+            } else {
+                throw $e
             }
         }
     }
     
     /**
-     * @param string[] $pluginsList
-     * @return \horses\IPlugin[] Array of plugins indexed by class name
-     * @throws InvalidArgumentException When a plugin is not found in files
+     * Used mainly for the unit tests, otherwise a PluginLocator will be
+     * instantiated
+     * @param \horses\PluginLocator $locator
+     * @return \horses\Kernel
      */
-    protected function instantiatePlugins($pluginsList)
+    public function injectPluginLocator(PluginLocator $locator)
     {
-        foreach (array_unique(array_merge(explode(',', self::MANDATORY_PLUGINS), $pluginsList)) as $plugin) {
-            $class = strpos($plugin, '\\') === false
-                ? sprintf('horses\\plugin\\%s\\Plugin', $plugin)
-                : $plugin;
-            $plugins[$plugin] = new $class();
+        $this->pluginLocator = $locator;
+        return $this;
+    }
+    
+    /**
+     * Used mainly for the unit tests, otherwise a Request will be
+     * instantiated from the superglobal arrays
+     * @param Symfony\Component\HttpFoundation\Request $request
+     * @return \horses\Kernel
+     */
+    public function injectRequest(Request $request)
+    {
+        $this->request = $request;
+        return $this;
+    }
+    
+    /**
+     * Used mainly for the unit tests, otherwise a Session will be instantiated
+     * and started.
+     * @param Symfony\Component\HttpFoundation\Session\Session $request
+     * @return \horses\Kernel
+     */
+    public function injectSession(Session $session)
+    {
+        $this->session = $session;
+        return $this;
+    }
+
+    /**
+     * @return horses\PluginLocator
+     */
+    protected function getPluginLocator()
+    {
+        return $this->pluginLocator ?: new PluginLocator();
+    }
+    
+    /**
+     * @return Symfony\Component\HttpFoundation\Request
+     */
+    protected function getRequest()
+    {
+        return $this->request ?: Request::createFromGlobals();
+    }
+    
+    /**
+     * @return Symfony\Component\HttpFoundation\Session\Session
+     */
+    protected function getSession()
+    {
+        if ($this->session) {
+            return $this->session;
+        } else {
+            $session = new Session();
+            $session->start();
+            return $session;
         }
-        
-        return $plugins;
     }
 }
