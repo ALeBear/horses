@@ -102,8 +102,8 @@ class Kernel
             return $DIContainer;
         } catch (Kernel404Exception $e) {
             $errorFile = sprintf('%s/404.php', str_replace('//', '', $_SERVER['DOCUMENT_ROOT']));
+            header('HTTP/1.0 404 Not Found');
             if (file_exists($errorFile)) {
-                header('HTTP/1.0 404 Not Found');
                 require $errorFile;
             } else {
                 throw $e;
