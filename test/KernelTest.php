@@ -2,9 +2,9 @@
 
 namespace horses\test;
 
-include __DIR__ . '/mock/MockPluginLocator.php';
-include __DIR__ . '/mock/MockPlugin.php';
-include __DIR__ . '/AbstractTest.php';
+include_once __DIR__ . '/mock/MockPluginLocator.php';
+include_once __DIR__ . '/mock/MockPlugin.php';
+include_once __DIR__ . '/AbstractTest.php';
 
 use horses\Kernel;
 use horses\test\mock\MockPluginLocator;

@@ -114,7 +114,7 @@ class Kernel
                 header('HTTP/1.0 500 Internal Server Error');
                 require $errorFile;
             } else {
-                throw $e
+                throw $e;
             }
         }
     }

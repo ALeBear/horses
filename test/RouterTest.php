@@ -2,7 +2,7 @@
 
 namespace horses\test;
 
-include __DIR__ . '/AbstractTest.php';
+include_once __DIR__ . '/AbstractTest.php';
 
 use PHPUnit_Framework_TestCase;
 use horses\Router;
