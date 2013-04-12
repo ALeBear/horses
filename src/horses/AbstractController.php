@@ -117,7 +117,7 @@ abstract class AbstractController
      * @param mixed $value
      * @return mixed the filtered out value
      */
-    public function filterMagicParam($name, $value)
+    protected function filterMagicParam($name, $value)
     {
         return $value;
     }
@@ -125,7 +125,7 @@ abstract class AbstractController
     /**
      * Renders the view
      */
-    public function render()
+    protected function render()
     {
         if (!$this->hasView()) {
             exit;
@@ -177,7 +177,7 @@ abstract class AbstractController
     /**
      * @return string
      */
-    public function getModule()
+    protected function getModule()
     {
         return $this->request->attributes->get('MODULE');
     }
@@ -185,7 +185,7 @@ abstract class AbstractController
     /**
      * @return string
      */
-    public function getAction()
+    protected function getAction()
     {
         return $this->request->attributes->get('ACTION');
     }
@@ -205,7 +205,7 @@ abstract class AbstractController
      * @param array $query Query string parameters, will be in the url itself
      * @param array $options Options for the router
      */
-    public function redirect($route, array $query = array(), array $options = array())
+    protected function redirect($route, array $query = array(), array $options = array())
     {
         $this->router->redirect(new Route($route, $query, $options));
     }
@@ -216,7 +216,7 @@ abstract class AbstractController
      * @param array $query Query string parameters, will be in the url itself
      * @param array $options Options for the router
      */
-    public function redirectToAction($action, array $query = array(), array $options = array())
+    protected function redirectToAction($action, array $query = array(), array $options = array())
     {
         $this->redirect($this->getModule() . '/' . $action, $query, $options);
     }
@@ -228,7 +228,7 @@ abstract class AbstractController
      * @param string $token
      * @return string
      */
-    public function _($token)
+    protected function _($token)
     {
         $locale = $this->dependencyInjectionContainer->get('locale', Container::NULL_ON_INVALID_REFERENCE);
         return $locale ? call_user_func_array(array($locale, '_'), func_get_args()) : $token;
@@ -238,7 +238,7 @@ abstract class AbstractController
      * Gets the entity manager if doctrine plugin was loaded
      * @return \Doctrine\ORM\EntityManager Null if plugin doctrine not loaded
      */
-    public function getEntityManager()
+    protected function getEntityManager()
     {
         return $this->dependencyInjectionContainer->get('entity_manager', Container::NULL_ON_INVALID_REFERENCE);
     }
@@ -247,7 +247,7 @@ abstract class AbstractController
      * Gets the global config
      * @return \Symfony\Component\Config\IQueryableConfig
      */
-    public function getConfig()
+    protected function getConfig()
     {
         return $this->dependencyInjectionContainer->get('config');
     }
@@ -256,7 +256,7 @@ abstract class AbstractController
      * @param type $filename
      * @return \horses\AbstractController
      */
-    public function addJs($filename)
+    protected function addJs($filename)
     {
         $this->javascripts[] = $filename;
         return $this;
@@ -266,7 +266,7 @@ abstract class AbstractController
      * @param type $filename
      * @return \horses\AbstractController
      */
-    public function addCss($filename)
+    protected function addCss($filename)
     {
         $this->css[] = $filename;
         return $this;
@@ -278,7 +278,7 @@ abstract class AbstractController
      * @param string $name
      * @return string
      */
-    public function getPartialFile($name)
+    protected function getPartialFile($name)
     {
         return sprintf('%s/horses_partials/%s.php', $this->request->attributes->get('DIR_CONTROLLERS'), $name);
     }

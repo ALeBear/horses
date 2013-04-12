@@ -1,8 +1,8 @@
 <?php
 
-namespace horses;
+namespace horses\test\mock;
 
-class View
+class MockView
 {
     /**
      * @var string
@@ -17,7 +17,6 @@ class View
 
     /**
      * @param string $file
-     * @param string $layoutFile
      */
     public function __construct($file, $layoutFile)
     {
