@@ -41,6 +41,11 @@ class Kernel
      */
     protected $session;
     
+    /**
+     * @var horses\PluginScheduler
+     */
+    protected $scheduler;
+    
     
     /**
      * @return \horses\Kernel
@@ -71,21 +76,19 @@ class Kernel
             $request->attributes->set('DIR_LIB', $request->attributes->get('DIR_BASE') . '/lib');
             $request->attributes->set('DIR_CONTROLLERS', $request->attributes->get('DIR_APPLICATION') . '/controller');
 
+            $DIContainer = new ContainerBuilder();
+            $scheduler = $this->getScheduler();
+
             //Instantiate plugins
             $pluginObjs = array();
-            foreach (array_unique(array_merge(explode(',', self::MANDATORY_PLUGINS), $plugins)) as $plugin) {
+            $plugins = array_unique(array_merge(explode(',', self::MANDATORY_PLUGINS), $plugins));
+            foreach ($plugins as $plugin) {
                 $pluginObjs[$plugin] = $this->getPluginLocator()->locate($plugin);
             }
-            $mainPlugin = $pluginObjs[self::MAIN_PLUGIN];
-            unset($pluginObjs[self::MAIN_PLUGIN]);
-
-            $DIContainer = new ContainerBuilder();
 
             //Bootstrap
-            uasort($pluginObjs, function ($e1, $e2) { return $e1->getBootstrapPriority() < $e2->getBootstrapPriority() ? -1 : 1; });
-            $mainPlugin->bootstrap($request, $DIContainer);
-            foreach ($pluginObjs as $plugin) {
-                $plugin->bootstrap($request, $DIContainer);
+            foreach ($scheduler->orderForBootstrap($plugins) as $pluginName) {
+                $pluginObjs[$pluginName]->bootstrap($request, $DIContainer);
             }
 
             //Route
@@ -93,10 +96,9 @@ class Kernel
 
             //Dispatch
             if (!$bootstrapOnly) {
-                foreach ($pluginObjs as $plugin) {
-                    $plugin->dispatch($request, $DIContainer);
+                foreach ($scheduler->orderForDispatch($plugins) as $pluginName) {
+                    $pluginObjs[$pluginName]->dispatch($request, $DIContainer);
                 }
-                $mainPlugin->dispatch($request, $DIContainer);
             }
 
             return $DIContainer;
@@ -144,6 +146,18 @@ class Kernel
     }
     
     /**
+     * Used mainly for the unit tests, otherwise a PluginScheduler will be
+     * instantiated
+     * @param horses\PluginScheduler $scheduler
+     * @return \horses\Kernel
+     */
+    public function injectScheduler(PluginScheduler $scheduler)
+    {
+        $this->scheduler = $scheduler;
+        return $this;
+    }
+    
+    /**
      * Used mainly for the unit tests, otherwise a Session will be instantiated
      * and started.
      * @param Symfony\Component\HttpFoundation\Session\Session $request
@@ -183,5 +197,13 @@ class Kernel
             $session->start();
             return $session;
         }
+    }
+    
+    /**
+     * @return horses\PluginScheduler
+     */
+    protected function getScheduler()
+    {
+        return $this->scheduler ?: new PluginScheduler();
     }
 }

@@ -10,13 +10,11 @@ class MockPlugin
 {
     public $bootstrapped = null;
     public $dispatched = null;
-    protected $bootstrapPriority = 5;
     protected $name;
     
-    public function __construct($name, $bootstrapPriority)
+    public function __construct($name)
     {
         $this->name = $name;
-        $this->bootstrapPriority = $bootstrapPriority;
     }
     
     public function bootstrap(Request $request, Container $dependencyInjectionContainer)
@@ -32,10 +30,5 @@ class MockPlugin
     {
         $this->dispatched = microtime(true);
         return $this;
-    }
-    
-    public function getBootstrapPriority()
-    {
-        return $this->bootstrapPriority;
     }
 }

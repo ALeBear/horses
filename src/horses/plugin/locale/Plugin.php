@@ -66,14 +66,4 @@ class Plugin implements IPlugin
             ->injectPath(sprintf('%s/%s', $request->attributes->get('DIR_CONTROLLERS'), $request->attributes->get('MODULE')))
             ->addDictionaryFilename(sprintf('%s-dict', $request->attributes->get('ACTION')));
     }
-    
-    /**
-     * Get the module bootstrap priority, from 0 to 10. 0 = ultra high priority
-     * (do not use), 10 = very low.
-     * @return integer
-     */
-    public function getBootstrapPriority()
-    {
-        return 1;
-    }
 }

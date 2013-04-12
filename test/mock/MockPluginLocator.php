@@ -11,20 +11,13 @@ class MockPluginLocator extends PluginLocator
      */
     protected $plugins;
     
-    /**
-     * @var IPlugin
-     */
-    protected $defaultPlugin;
-    
     
     /**
      * @param array $plugins
-     * @param \horses\test\IPlugin $defaultPlugin
      */
-    public function __construct(array $plugins = array(), IPlugin $defaultPlugin = null)
+    public function __construct(array $plugins = array())
     {
         $this->plugins = $plugins;
-        $this->defaultPlugin = $defaultPlugin;
     }
     
     /**
@@ -35,8 +28,6 @@ class MockPluginLocator extends PluginLocator
      */
     public function locate($definition)
     {
-        return array_key_exists($definition, $this->plugins)
-            ? $this->plugins[$definition]
-            : $this->defaultPlugin;
+        return $this->plugins[$definition];
     }
 }
