@@ -87,7 +87,7 @@ abstract class AbstractController
         $this->metas = array_merge(array_reduce(
                 explode(',', self::DEFAULT_METAS),
                 function (&$result, $elt) { list($key, $val) = explode('=', $elt); $result[$key] = $val; return $result; }, array()),
-            $dependencyInjectionContainer->get('config')->get('view.meta'));
+            $dependencyInjectionContainer->get('config')->get('view.meta', array()));
     }
 
     /**
@@ -128,7 +128,7 @@ abstract class AbstractController
     protected function render()
     {
         if (!$this->hasView()) {
-            exit;
+            return;
         }
         
         //Process view file

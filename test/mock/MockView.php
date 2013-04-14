@@ -2,7 +2,9 @@
 
 namespace horses\test\mock;
 
-class MockView
+use horses\View;
+
+class MockView extends View
 {
     /**
      * @var string

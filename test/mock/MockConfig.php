@@ -2,6 +2,8 @@
 
 namespace horses\test\mock;
 
+use Symfony\Component\Config\IQueryableConfig;
+
 class MockConfig  implements IQueryableConfig
 {
     /**
@@ -16,7 +18,7 @@ class MockConfig  implements IQueryableConfig
     
     public function get($name, $default = null)
     {
-        return isset($data[$name]) ? $data[$name] : $default;
+        return isset($this->data[$name]) ? $this->data[$name] : $default;
     }
     
     public function set($name, $value)
