@@ -5,11 +5,12 @@ namespace horses\plugin\locale;
 use horses\IPlugin;
 use horses\KernelPanicException;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 class Plugin implements IPlugin
 {
-    public function bootstrap(Request $request, Container $dependencyInjectionContainer)
+    public function bootstrap(Request $request, ContainerBuilder $dependencyInjectionContainer)
     {
         $config = $dependencyInjectionContainer->get('config');
         $config->add('locale', new Config('locale.yml', $dependencyInjectionContainer->get('config_loader')));
@@ -38,8 +39,8 @@ class Plugin implements IPlugin
         $request->getSession()->set('locale', $lang);
         
         $dependencyInjectionContainer->register('locale', 'horses\\plugin\\locale\\Locale')
-            ->addMethodCall('setLang', array($lang))
-            ->addMethodCall('injectPath', array($mainFilesPath));
+            ->addMethodCall('setLang', [$lang])
+            ->addMethodCall('injectPath', [$mainFilesPath]);
         
         foreach ($config->get('locale.available') as $code => $urlPrefix) {
             if ($code == $lang) {

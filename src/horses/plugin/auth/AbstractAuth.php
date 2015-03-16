@@ -15,7 +15,7 @@ abstract class AbstractAuth
     /**
      * Fully qualified classname
      * @param string $name
-     * @return \horses\plugin\auth\Auth
+     * @return \horses\plugin\auth\AbstractAuth
      */
     public function injectUserClassname($name)
     {
@@ -42,7 +42,7 @@ abstract class AbstractAuth
     }
     
     /**
-     * @param \Symfony\Component\HttpFoundation\Session $session
+     * @param \Symfony\Component\HttpFoundation\Session\Session $session
      * @return \horses\plugin\auth\AbstractUser
      */
     public function getUserFromSession(Session $session)
@@ -58,8 +58,8 @@ abstract class AbstractAuth
     
     /**
      * @param \horses\plugin\auth\AbstractUser $user
-     * @param \Symfony\Component\HttpFoundation\Session $session
-     * @return \horses\plugin\auth\Auth $this
+     * @param \Symfony\Component\HttpFoundation\Session\Session $session
+     * @return \horses\plugin\auth\AbstractAuth $this
      */
     public function saveUserToSession(AbstractUser $user, Session $session)
     {
@@ -70,8 +70,8 @@ abstract class AbstractAuth
     }
     
     /**
-     * @param \Symfony\Component\HttpFoundation\Session $session
-     * @return \horses\plugin\auth\Auth $this
+     * @param \Symfony\Component\HttpFoundation\Session\Session $session
+     * @return \horses\plugin\auth\AbstractAuth $this
      */
     public function removeUserFromSession(Session $session)
     {

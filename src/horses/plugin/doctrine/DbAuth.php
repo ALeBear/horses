@@ -11,14 +11,14 @@ use horses\plugin\auth\AbstractAuth;
 class DbAuth extends AbstractAuth
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
     
     
     /**
      * @param \Doctrine\ORM\EntityManager $em
-     * @return \horses\plugin\auth\Auth
+     * @return \horses\plugin\doctrine\DbAuth
      */
     public function injectEntityManager(EntityManager $em)
     {

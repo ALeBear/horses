@@ -4,13 +4,14 @@ namespace horses\plugin\auth;
 
 use horses\IPlugin;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 class Plugin implements IPlugin
 {
-    public function bootstrap(Request $request, Container $dependencyInjectionContainer)
+    public function bootstrap(Request $request, ContainerBuilder $dependencyInjectionContainer)
     {
-        /* @var $config Symfony\Component\Config\Collection */
+        /** @var $config \Symfony\Component\Config\Collection */
         $config = $dependencyInjectionContainer->get('config');
         $config->add('auth', new Config('auth.yml', $dependencyInjectionContainer->get('config_loader')));
     }

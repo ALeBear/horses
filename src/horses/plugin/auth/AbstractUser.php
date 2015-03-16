@@ -49,7 +49,7 @@ abstract class AbstractUser
      * @param string $name
      * @param string $email
      * @param string $password
-     * @return User
+     * @return AbstractUser
      */
     public static function create($name, $email, $password)
     {

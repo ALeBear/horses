@@ -10,13 +10,13 @@ use InvalidArgumentException;
 class Collection implements IQueryableConfig
 {
     /**
-     * @var Config[]
+     * @var ConfigAbstract[]
      */
     protected $configs = array();
     
     /**
      * Factory method for fluent interfaces
-     * @return ConfigCollection
+     * @return Collection
      */
     public static function factory()
     {

@@ -4,6 +4,7 @@ namespace horses\plugin\main;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use horses\IPlugin;
@@ -17,7 +18,7 @@ use horses\AbstractController;
 
 class Plugin implements IPlugin
 {
-    public function bootstrap(Request $request, Container $dependencyInjectionContainer)
+    public function bootstrap(Request $request, ContainerBuilder $dependencyInjectionContainer)
     {
         $configDir = $request->attributes->get('DIR_APPLICATION') . '/config';
         if (!is_dir($configDir)) {
@@ -25,7 +26,7 @@ class Plugin implements IPlugin
         }
         
         $loader = new YamlFileLoader(
-            new FileLocator(array($configDir, $configDir . '/' . $request->attributes->get('ENV'))));
+            new FileLocator([$configDir, $configDir . '/' . $request->attributes->get('ENV')]));
 
         $dependencyInjectionContainer->set('config_loader', $loader);
         $dependencyInjectionContainer->set('config', Collection::factory()
