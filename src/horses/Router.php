@@ -51,7 +51,9 @@ class Router
      */
     public function addPrefix($prefix)
     {
-        (string) $prefix !== '' && $this->prefixes[] = $prefix;
+        if ((string) $prefix !== '') {
+            $this->prefixes[] = $prefix;
+        }
         return $this;
     }
 

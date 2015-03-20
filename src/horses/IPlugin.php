@@ -15,7 +15,7 @@ interface IPlugin
      * Bootstrap our plugin by registering services in the dependency injection
      * container
      * @param Request $request
-     * @param \Symfony\Component\DependencyInjection\Container|ContainerBuilder $dependencyInjectionContainer
+     * @param ContainerBuilder $dependencyInjectionContainer
      * @return
      */
     public function bootstrap(Request $request, ContainerBuilder $dependencyInjectionContainer);
