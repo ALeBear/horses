@@ -18,7 +18,7 @@ class PluginScheduler
     {
         $core = $nonCore = array();
         foreach ($plugins as $plugin) {
-            if ($plugin == Kernel::MAIN_PLUGIN) {
+            if ($plugin == FrontController::MAIN_PLUGIN) {
                 continue;
             }
             if (strpos($plugin, '\\') === false) {
@@ -28,7 +28,7 @@ class PluginScheduler
             }
         }
         
-        return array_merge($this->orderCorePluginsForDispatch($core), $this->orderNonCorePluginsForDispatch($nonCore), array(Kernel::MAIN_PLUGIN));
+        return array_merge($this->orderCorePluginsForDispatch($core), $this->orderNonCorePluginsForDispatch($nonCore), array(FrontController::MAIN_PLUGIN));
     }
 
     /**
@@ -41,7 +41,7 @@ class PluginScheduler
     {
         $core = $nonCore = array();
         foreach ($plugins as $plugin) {
-            if ($plugin == Kernel::MAIN_PLUGIN) {
+            if ($plugin == FrontController::MAIN_PLUGIN) {
                 continue;
             }
             if (strpos($plugin, '\\') === false) {
@@ -51,7 +51,7 @@ class PluginScheduler
             }
         }
         
-        return array_merge(array(Kernel::MAIN_PLUGIN), $this->orderCorePluginsForBootstrap($core), $this->orderNonCorePluginsForBootstrap($nonCore));
+        return array_merge(array(FrontController::MAIN_PLUGIN), $this->orderCorePluginsForBootstrap($core), $this->orderNonCorePluginsForBootstrap($nonCore));
     }
     
     /**

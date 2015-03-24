@@ -1,16 +1,13 @@
 <?php
 
-namespace Symfony\Component\Config;
+namespace horses\config;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\Config\Definition\Processor;
 
-/**
- * The file subclassed by clients to get config vars
- */
-abstract class ConfigAbstract implements ConfigurationInterface, IQueryableConfig
+class Config implements QueryableInterface
 {
+    const LEVEL_SEPARATOR = '.';
+
     /**
      * @param mixed[]
      */
@@ -20,12 +17,11 @@ abstract class ConfigAbstract implements ConfigurationInterface, IQueryableConfi
     /**
      * @param string $resource Usually the config file name, which may be found
      * at multiple locations in the loader's locator, then merged
-     * @param \Symfony\Component\Config\Loader\LoaderInterface $loader
+     * @param LoaderInterface $loader
      */
     public function __construct($resource, LoaderInterface $loader)
     {
-        $processor = new Processor();
-        $this->values = $processor->processConfiguration($this, $loader->load($resource));
+        $this->values = call_user_func_array('array_replace_recursive', $loader->load($resource));
     }
 
     /**
@@ -37,7 +33,7 @@ abstract class ConfigAbstract implements ConfigurationInterface, IQueryableConfi
     public function get($name, $default = null)
     {
         $val =& $this->values;
-        foreach (explode('.', $name) as $key) {
+        foreach (explode(self::LEVEL_SEPARATOR, $name) as $key) {
             if (!is_array($val) || !array_key_exists($key, $val)) {
                 return $default;
             }
@@ -51,10 +47,23 @@ abstract class ConfigAbstract implements ConfigurationInterface, IQueryableConfi
      * Temporarily (for the current PHP call) set a config value
      * @param string $name
      * @param mixed $value
-     * @return \Symfony\Component\Config\ConfigAbstract $this
+     * @return $this
      */
     public function set($name, $value)
     {
-        //TODO
+        $val =& $this->values;
+        $key = $name;
+        foreach (explode(self::LEVEL_SEPARATOR, $name) as $key) {
+            if (!isset($val[$key])) {
+                $val[$key] = [];
+            } else if (!is_array($val[$key])) {
+                $val[$key] = [$key => $val[$key]];
+            }
+            $parentVal =& $val;
+            $val =& $val[$key];
+        }
+        $parentVal[$key] = $value;
+
+        return $this;
     }
 }

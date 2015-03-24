@@ -1,8 +1,8 @@
 {
     "name": "alebear/horses",
     "type": "library",
-    "description": "Horses PHP MVC framezork",
-    "keywords": ["php", "framework", "mvc"],
+    "description": "Horses PHP ARD framework",
+    "keywords": ["php", "framework", "ard"],
     "license": "LGPL-3.0",
     "authors": [
         {
@@ -11,20 +11,18 @@
         }
     ],
     "require": {
-        "php": ">=5.3",
-        "doctrine/orm": "2.3.*",
-        "symfony/yaml": "2.2.*",
-        "symfony/config": "2.2.*",
-        "symfony/dependency-injection": "2.2.*",
-        "symfony/http-foundation": "2.2.*",
-        "phpunit/phpunit": "3.7.*"
+        "php": ">=5.5",
+        "doctrine/orm": "2.*",
+        "symfony/yaml": "2.*",
+        "symfony/config": "2.*",
+        "symfony/dependency-injection": "2.*",
+        "symfony/http-foundation": "2.*",
+        "phpunit/phpunit": "4.*"
     },
-    "bin": ["bin/scaffolder", "bin/scaffolder.php"],
     "autoload": {
         "psr-0": {
             "horses": "src",
-            "horses\\tests": "tests",
-            "Symfony": "src"
+            "horses\\test": "test"
         }
     }
 }

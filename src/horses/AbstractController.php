@@ -246,7 +246,7 @@ abstract class AbstractController
     
     /**
      * Gets the global config
-     * @return \Symfony\Component\Config\IQueryableConfig
+     * @return \Symfony\Component\Config\QueryableInterface
      */
     protected function getConfig()
     {

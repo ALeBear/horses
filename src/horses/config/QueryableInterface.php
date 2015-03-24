@@ -1,11 +1,11 @@
 <?php
 
-namespace Symfony\Component\Config;
+namespace horses\config;
 
-interface IQueryableConfig
+interface QueryableInterface
 {
     /**
-     * Get a value. Subvalues are separated by dots
+     * Get a value, values are namespaced by dots
      * @param string $name
      * @param mixed $default
      * @return mixed
@@ -16,7 +16,7 @@ interface IQueryableConfig
      * Temporarily (for the current PHP call) set a config value
      * @param string $name
      * @param mixed $value
-     * @return Symfony\Component\Config\ConfigAbstract $this
+     * @return $this
      */
     public function set($name, $value);
 }
