@@ -4,9 +4,6 @@ namespace horses\config;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 
-/**
- * A collection of config files
- */
 class Factory
 {
     /** @var LoaderInterface */
@@ -15,6 +12,11 @@ class Factory
     protected $configClass;
 
 
+    /**
+     * @param LoaderInterface $loader
+     * @param $configClass
+     * @throws InvalidConfigClassException If the given $configClass does not extends horses\config\Config
+     */
     public function __construct(LoaderInterface $loader, $configClass)
     {
         $this->loader = $loader;

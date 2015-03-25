@@ -2,79 +2,50 @@
 
 namespace horses;
 
-use horses\config\Collection;
-use horses\config\Factory;
-use horses\config\YamlFileLoader;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\HttpFoundation\Request;
+use horses\action\StatefulActionInterface;
+use horses\action\AuthenticatedActionInterface;
+use horses\action\ActionInterface;
+use horses\config\Collection;
 use Exception;
 
 class FrontController
 {
-    /**
-     * @var string The name of the default environment
-     */
-    const DEFAULT_ENV = 'prod';
-
-
-    public function run($projectRootPath)
+    public function run(Request $request, Kernel $kernel)
     {
         try {
-            $request = $this->getRequest();
-            $serverContext = $this->getServerContext($request, $projectRootPath);
-            $configs = $this->getConfigCollection($serverContext->getPath(ServerContext::DIR_CONFIG), $serverContext->getEnvironment());
+            $serverContext = $kernel->getServerContext();
+            $configs = $kernel->getConfigCollection();
+            /** @var ActionInterface $action */
             $action = $this->route($serverContext, $request, $configs);
             if (!$action) {
                 //404
             }
 
-//            if ($action->needsSession()) {
-//                $this->getSession();
-//            }
-//            if ($action->needsAuthentication()) {
-//                //Authenticate
-//            }
-//            if ($action->needsAuthorization()) {
-//                //Authorize
-//            }
-            //Load plugins (the ones requested by action?)
-            //Manage content nego and loads responder
-            //Give control to action
-            //Make the Responder output data and return
+            $credentialsNeeded = $action->getAuthorizationCredentials();
+            if (!is_null($credentialsNeeded)) {
+                if (!$this->getUser()->hasCredentials($credentialsNeeded)) {
+                    //400
+                }
+            }
 
+            if ($action instanceof StatefulActionInterface) {
+                /** @var StatefulActionInterface $action */
+                $action->setSession($this->getSession());
+            }
+
+            if ($action instanceof AuthenticatedActionInterface) {
+                /** @var AuthenticatedActionInterface $action */
+                $action->setAuthentication($this->getUser());
+            }
+
+            $responder = $action->execute($request);
         } catch (Exception $e) {
             //500
         }
-    }
 
-    /**
-     * @param Request $request
-     * @param string $projectRootPath
-     * @return ServerContext
-     */
-    protected function getServerContext(Request $request, $projectRootPath)
-    {
-        $serverContext = new ServerContext();
-        $serverContext->set('ENV', $request->server->get('ENV', static::DEFAULT_ENV));
-        $serverContext->set(ServerContext::DIR_ROOT, $projectRootPath);
-        $serverContext->set(ServerContext::DIR_APPLICATION, $serverContext->getPath(ServerContext::DIR_ROOT) . '/application');
-        $serverContext->set(ServerContext::DIR_LIB, $serverContext->getPath(ServerContext::DIR_ROOT) . '/lib');
-        $serverContext->set(ServerContext::DIR_CONTROLLERS, $serverContext->getPath(ServerContext::DIR_APPLICATION) . '/controller');
-        $serverContext->set(ServerContext::DIR_CONFIG, $serverContext->getPath(ServerContext::DIR_APPLICATION) . '/config');
-        $serverContext->set(ServerContext::DIR_PUBLIC, $serverContext->getPath(ServerContext::DIR_ROOT) . '/public');
-
-        return $serverContext;
-    }
-
-    protected function getConfigCollection($configDir, $env)
-    {
-        if (!is_dir($configDir)) {
-            throw new KernelPanicException(sprintf('Config dir does not exists or not readable: %s', $configDir));
-        }
-
-        $loader = new YamlFileLoader(new FileLocator([$configDir, $configDir . '/' . $env]));
-        return new Collection(new Factory($loader, 'horses\config\Config'));
+        $responder->output();
     }
 
     /**
@@ -88,6 +59,11 @@ class FrontController
         return $session;
     }
 
+    protected function getUser()
+    {
+
+    }
+
     /**
      * @param ServerContext $serverContext
      * @param Request $request
@@ -97,13 +73,5 @@ class FrontController
     protected function route(ServerContext $serverContext, Request $request, Collection $configurations)
     {
 
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Request
-     */
-    protected function getRequest()
-    {
-        return Request::createFromGlobals();
     }
 }
