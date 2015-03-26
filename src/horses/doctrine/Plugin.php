@@ -44,10 +44,10 @@ class Plugin implements IPlugin
 
         $dependencyInjectionContainer->set('entity_manager', $em);
         
-        //Add DbAuth if it's the Auth class (add user too)
-        if ($config->hasSection('auth') && $config->get('auth.authClassname') == 'horses\\plugin\\doctrine\\DbAuth') {
+        //Add DbAuthAbstract if it's the Auth class (add user too)
+        if ($config->hasSection('auth') && $config->get('auth.authClassname') == 'horses\\plugin\\doctrine\\DbAuthAbstract') {
             /** @var $dependencyInjectionContainer \Symfony\Component\DependencyInjection\ContainerBuilder */
-            $dependencyInjectionContainer->register('auth', 'horses\\plugin\\doctrine\\DbAuth')
+            $dependencyInjectionContainer->register('auth', 'horses\\plugin\\doctrine\\DbAuthAbstract')
                 ->addMethodCall('injectEntityManager', [new Reference('entity_manager')])
                 ->addMethodCall('injectUserClassname', [$config->get('auth.userClassname')]);
 

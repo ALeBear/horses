@@ -2,42 +2,49 @@
 
 namespace horses;
 
+use horses\auth\User;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
-use horses\action\StatefulActionInterface;
-use horses\action\AuthenticatedActionInterface;
-use horses\action\ActionInterface;
+use horses\action\StatefulAction;
+use horses\action\AuthenticatedAction;
+use horses\action\Action;
 use horses\config\Collection;
 use Exception;
 
 class FrontController
 {
+    /** @var  User */
+    protected $user;
+
     public function run(Request $request, Kernel $kernel)
     {
         try {
             $serverContext = $kernel->getServerContext();
             $configs = $kernel->getConfigCollection();
-            /** @var ActionInterface $action */
+            /** @var Action $action */
             $action = $this->route($serverContext, $request, $configs);
             if (!$action) {
                 //404
             }
 
-            $credentialsNeeded = $action->getAuthorizationCredentials();
-            if (!is_null($credentialsNeeded)) {
-                if (!$this->getUser()->hasCredentials($credentialsNeeded)) {
+            if ($action instanceof StatefulAction) {
+                /** @var StatefulAction $action */
+                $action->setState($this->getState());
+            }
+
+            /** @var Action $action */
+            $authorizationsNeeded = $action->getAuthorizationsNeeded();
+            if (!is_null($authorizationsNeeded)) {
+                $user = $this->getUser($action);
+                if (!$user || !$user->hasAuthorizations($authorizationsNeeded)) {
                     //400
                 }
+
             }
 
-            if ($action instanceof StatefulActionInterface) {
-                /** @var StatefulActionInterface $action */
-                $action->setSession($this->getSession());
-            }
-
-            if ($action instanceof AuthenticatedActionInterface) {
-                /** @var AuthenticatedActionInterface $action */
-                $action->setAuthentication($this->getUser());
+            if ($action instanceof AuthenticatedAction && $user) {
+                /** @var AuthenticatedAction $action */
+                $action->setAuthentication($user);
             }
 
             $responder = $action->execute($request);
@@ -49,26 +56,78 @@ class FrontController
     }
 
     /**
-     * @return Session
+     * @return State
      */
-    protected function getSession()
+    protected function getState()
     {
         $session = new Session();
         $session->start();
 
-        return $session;
+        return new State($session);
     }
 
-    protected function getUser()
+    /**
+     * @param AuthenticatedAction $action
+     * @return User|null
+     */
+    protected function getUser(AuthenticatedAction $action)
     {
+        if (!$this->user) {
+            $this->user = $this->loadUser($action);
+        }
 
+        return $this->user;
+    }
+
+    /**
+     * @param AuthenticatedAction $action
+     * @return User|null
+     */
+    protected function loadUser(AuthenticatedAction $action)
+    {
+        switch (true) {
+            case $userId = $this->getUserIdFromState($action):
+                return $action->getUserFactory()->getUserFromId($userId);
+            case $userId = $this->getUserIdFromCredentials($action):
+                if ($action instanceof StatefulAction && $userId) {
+                    $action->getState()->saveUserId($userId);
+                }
+                return $action->getUserFactory()->getUserFromId($userId);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * @param Action $action
+     * @return null|string
+     */
+    protected function getUserIdFromState(Action $action)
+    {
+        return $action instanceof StatefulAction
+            ? $action->getState()->getUserId()
+            : null;
+    }
+
+    /**
+     * @param AuthenticatedAction $action
+     * @return null|string
+     */
+    protected function getUserIdFromCredentials(AuthenticatedAction $action)
+    {
+        $credentialsFactory = $action->getCredentialsFactory();
+        if ($credentialsFactory) {
+            return $action->getAuthenticator()->getUserId($credentialsFactory->getCredentials());
+        }
+
+        return null;
     }
 
     /**
      * @param ServerContext $serverContext
      * @param Request $request
      * @param Collection $configurations
-     * @return ActionInterface
+     * @return Action
      */
     protected function route(ServerContext $serverContext, Request $request, Collection $configurations)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\plugin\auth;
+namespace horses\auth;
 
 use horses\IPlugin;
 use Symfony\Component\DependencyInjection\Container;

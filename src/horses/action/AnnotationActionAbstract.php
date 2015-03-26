@@ -2,11 +2,10 @@
 
 namespace horses\action;
 
-class AnnotationActionAbstract implements ActionInterface
+abstract class AnnotationActionAbstract implements Action
 {
     public function getAuthorizationCredentials()
     {
-
+        //TODO
     }
-
 }

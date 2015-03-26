@@ -3,11 +3,10 @@
 namespace horses\action;
 
 use horses\responder\ResponderInterface;
-use Symfony\Component\HttpFoundation\Request;
 
-interface ActionInterface
+interface Action
 {
-    public function getAuthorizationCredentials();
+    public function getAuthorizationsNeeded();
 
     /**
      * @param Request $request

@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\plugin\auth;
+namespace horses\auth;
 
 use Symfony\Component\Config\ConfigAbstract;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

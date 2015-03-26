@@ -1,10 +1,10 @@
 <?php
 
-namespace horses\plugin\auth;
+namespace horses\auth;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 
-abstract class AbstractAuth
+abstract class AuthAbstract
 {
     /**
      * @var string
@@ -15,7 +15,7 @@ abstract class AbstractAuth
     /**
      * Fully qualified classname
      * @param string $name
-     * @return \horses\plugin\auth\AbstractAuth
+     * @return \horses\auth\AuthAbstract
      */
     public function injectUserClassname($name)
     {
@@ -27,7 +27,7 @@ abstract class AbstractAuth
      * Instantiate a user given the credentials, or return null if not valid
      * @param string $email
      * @param string $passwordHash
-     * @return \horses\plugin\auth\AbstractUser
+     * @return \horses\auth\AbstractUser
      */
     abstract public function getUser($email, $passwordHash);
     
@@ -43,7 +43,7 @@ abstract class AbstractAuth
     
     /**
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @return \horses\plugin\auth\AbstractUser
+     * @return \horses\auth\AbstractUser
      */
     public function getUserFromSession(Session $session)
     {
@@ -57,9 +57,9 @@ abstract class AbstractAuth
     }
     
     /**
-     * @param \horses\plugin\auth\AbstractUser $user
+     * @param \horses\auth\AbstractUser $user
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @return \horses\plugin\auth\AbstractAuth $this
+     * @return \horses\auth\AuthAbstract $this
      */
     public function saveUserToSession(AbstractUser $user, Session $session)
     {
@@ -71,7 +71,7 @@ abstract class AbstractAuth
     
     /**
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @return \horses\plugin\auth\AbstractAuth $this
+     * @return \horses\auth\AuthAbstract $this
      */
     public function removeUserFromSession(Session $session)
     {

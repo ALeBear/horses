@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\plugin\auth;
+namespace horses\auth;
 
 /**
  * Users superclass
@@ -41,7 +41,7 @@ abstract class AbstractUser
     {
         $this->name = $name;
         $this->email = $email;
-        $this->passwordHash = AbstractAuth::getPasswordHash($password);
+        $this->passwordHash = AuthAbstract::getPasswordHash($password);
     }
     
     /**
@@ -83,7 +83,7 @@ abstract class AbstractUser
     /**
      * @param string $name
      * @param string $email
-     * @return \horses\plugin\auth\AbstractUser
+     * @return \horses\auth\AbstractUser
      */
     public function updateData($name, $email)
     {
@@ -95,11 +95,11 @@ abstract class AbstractUser
     
     /**
      * @param string $password
-     * @return \horses\plugin\auth\AbstractUser
+     * @return \horses\auth\AbstractUser
      */
     public function updatePassword($password)
     {
-        $this->passwordHash = AbstractAuth::getPasswordHash($password);
+        $this->passwordHash = AuthAbstract::getPasswordHash($password);
         
         return $this;
     }
@@ -110,7 +110,7 @@ abstract class AbstractUser
      */
     public function isPasswordValid($password)
     {
-        return $this->passwordHash == AbstractAuth::getPasswordHash($password);
+        return $this->passwordHash == AuthAbstract::getPasswordHash($password);
     }
     
     /**
@@ -124,7 +124,7 @@ abstract class AbstractUser
         for ($i = 0; $i < mt_rand(6, 9); $i++) {
             $pass .= chr(mt_rand(33, 122));
         }
-        $this->passwordHash = AbstractAuth::getPasswordHash($pass);
+        $this->passwordHash = AuthAbstract::getPasswordHash($pass);
         
         return $pass;
     }

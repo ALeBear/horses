@@ -3,12 +3,12 @@
 namespace horses\plugin\doctrine;
 
 use Doctrine\ORM\EntityManager;
-use horses\plugin\auth\AbstractAuth;
+use horses\auth\AuthAbstract;
 
 /**
  * A Auth subclass, storing the user in DB through Doctrine
  */
-class DbAuth extends AbstractAuth
+class DbAuthAbstract extends AuthAbstract
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -18,7 +18,7 @@ class DbAuth extends AbstractAuth
     
     /**
      * @param \Doctrine\ORM\EntityManager $em
-     * @return \horses\plugin\doctrine\DbAuth
+     * @return \horses\plugin\doctrine\DbAuthAbstract
      */
     public function injectEntityManager(EntityManager $em)
     {
@@ -30,10 +30,10 @@ class DbAuth extends AbstractAuth
      * Authenticate a user and returns it
      * @param string $email
      * @param string $passwordHash
-     * @return \horses\plugin\auth\AbstractUser
+     * @return \horses\auth\AbstractUser
      */
     public function getUser($email, $passwordHash)
     {
-        return $this->em->getRepository($this->userClassname)->findOneBy(array('email' => $email, 'passwordHash' => $passwordHash));
+        return $this->em->getRepository($this->userClassname)->findOneBy(['email' => $email, 'passwordHash' => $passwordHash]);
     }
 }
