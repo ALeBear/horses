@@ -18,7 +18,7 @@ class YamlFileLoaderTest extends AbstractTest
         $fileLocator->expects($this->any())
             ->method('locate')
             ->will($this->returnCallback(function($resource) {
-                if ($resource == 'config.yml') return [dirname(dirname(__DIR__)) . '/fixtures/config.yml'];
+                if ($resource == 'config.yml') return [dirname(dirname(__DIR__)) . '/fixtures/config/config.yml'];
                 throw new \InvalidArgumentException();
             }));
         $this->yamlFileLoader = new YamlFileLoader($fileLocator);

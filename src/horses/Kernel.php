@@ -8,9 +8,6 @@ use horses\config\YamlFileLoader;
 use horses\config\Collection as ConfigCollection;
 use horses\config\Factory;
 
-/**
- * This kernel uses yaml config files read by horses\config\Config classes
- */
 class Kernel
 {
     const DEFAULT_ENV = 'prod';
@@ -88,7 +85,7 @@ class Kernel
         $context->set('ENV', $environment);
         $context->set(ServerContext::DIR_ROOT, $projectRootPath);
         $context->set(ServerContext::DIR_SRC, $context->getPath(ServerContext::DIR_ROOT) . '/src');
-        $context->set(ServerContext::DIR_ACTIONS, $context->getPath(ServerContext::DIR_ROOT) . '/application');
+        $context->set(ServerContext::DIR_ACTIONS, $context->getPath(ServerContext::DIR_ROOT) . '/action');
         $context->set(ServerContext::DIR_CONFIG, $context->getPath(ServerContext::DIR_ROOT) . '/config');
         $context->set(ServerContext::DIR_PUBLIC, $context->getPath(ServerContext::DIR_ROOT) . '/public');
 
