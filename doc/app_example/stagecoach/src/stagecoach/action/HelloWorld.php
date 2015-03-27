@@ -1,11 +1,11 @@
 <?php
 
-namespace stagecoach\application;
+namespace stagecoach\action;
 
 use horses\action\Action;
 use Symfony\Component\HttpFoundation\Request;
 
-class HelloWorldAction implements Action
+class HelloWorld implements Action
 {
     /** @inheritdoc */
     public function execute(Request $request)

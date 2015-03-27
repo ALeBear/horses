@@ -10,9 +10,15 @@ class YamlFileLoader extends FileLoader
     /** @inheritdoc */
     public function load($resource, $type = null)
     {
-        $configs = array();
-        foreach ($this->locator->locate($resource, null, false) as $aFile) {
-            $configs[] = Yaml::parse($aFile);
+        $resource = sprintf('%s.yml', $resource);
+        $configs = [];
+        try {
+            foreach ($this->locator->locate($resource, null, false) as $aFile) {
+                $parsed = Yaml::parse($aFile);
+                $configs[] = $parsed ? $parsed : [];
+            }
+        } catch (\InvalidArgumentException $e) {
+            $configs[] = [];
         }
         
         return $configs;

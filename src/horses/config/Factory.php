@@ -20,9 +20,7 @@ class Factory
     public function __construct(LoaderInterface $loader, $configClass)
     {
         $this->loader = $loader;
-        if (!($configClass instanceof Config)) {
-            throw new InvalidConfigClassException(sprintf('Not a horses\config\Config class: %s', $configClass));
-        }
+        $this->configClass = $configClass;
     }
 
     /**

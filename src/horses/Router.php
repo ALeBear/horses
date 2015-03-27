@@ -27,6 +27,7 @@ class Router
      */
     public function __construct(ServerContext $serverContext, ConfigCollection $configs)
     {
+        $this->serverContext = $serverContext;
         $this->config = $configs->load(self::CONFIG_SECTION)->getSection(self::CONFIG_SECTION);
     }
 
@@ -38,7 +39,7 @@ class Router
     public function route(Request $request)
     {
         list($actionName, $routeParameters) = $this->breakdownRoute($request);
-        $actionClass = $this->ucWordize($actionName);
+        $actionClass = sprintf('%s\\action\\%s', $this->serverContext->geApplication(), $this->ucWordize($actionName));
         if (!class_exists($actionClass)) {
             throw new UnknownRouteException(sprintf('Cannod find action: %s', $actionClass));
         }

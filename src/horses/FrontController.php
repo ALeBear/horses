@@ -16,9 +16,7 @@ class FrontController
     public function run(Request $request, Kernel $kernel)
     {
         try {
-            $serverContext = $kernel->getServerContext();
-            $configs = $kernel->getConfigCollection();
-            $action = $kernel->getRouter()->route($serverContext, $request, $configs);
+            $action = $kernel->getRouter()->route($request);
 
             if ($action instanceof StatefulAction) {
                 /** @var StatefulAction $action */
@@ -35,10 +33,14 @@ class FrontController
             $responder = $action->execute($request);
         } catch (UnknownRouteException $e) {
             //404
+            die('404');
         } catch (AuthenticationException $e) {
             //400
+            die('400');
         } catch (Exception $e) {
+            echo '<pre>';print_r($e);
             //500
+            die('500');
         }
 
         $responder->output();

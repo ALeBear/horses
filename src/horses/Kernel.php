@@ -14,6 +14,8 @@ use horses\config\Factory;
 class Kernel
 {
     const DEFAULT_ENV = 'prod';
+    const CONFIG_SECTION = 'kernel';
+    const CONFIG_KEY_APPLICATION = 'application';
 
     /** @var  ServerContext */
     protected $serverContext;
@@ -28,6 +30,7 @@ class Kernel
     public function __construct($projectRootPath, $environment, ServerContext $emptyContext)
     {
         $this->serverContext = $this->buildContext($emptyContext, $environment, $projectRootPath);
+        $this->serverContext->set('APP', $this->getConfigCollection()->getSection(self::CONFIG_SECTION)->get(self::CONFIG_KEY_APPLICATION));
     }
 
     /**
@@ -44,6 +47,7 @@ class Kernel
 
             $loader = new YamlFileLoader(new FileLocator([$configDir, $configDir . '/' . $this->serverContext->getEnvironment()]));
             $this->configCollection = new ConfigCollection(new Factory($loader, \horses\config\Config::class));
+            $this->configCollection->load(self::CONFIG_SECTION);
         }
 
         return $this->configCollection;

@@ -22,7 +22,8 @@
     "autoload": {
         "psr-0": {
             "horses": "src",
-            "horses\\test": "test"
+            "horses\\test": "test",
+            "stagecoach": "doc\\app_example\\stagecoach\\src"
         }
     }
 }

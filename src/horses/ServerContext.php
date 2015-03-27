@@ -23,6 +23,14 @@ class ServerContext extends ParameterBag
     }
 
     /**
+     * @return string
+     */
+    public function geApplication()
+    {
+        return $this->get('APP');
+    }
+
+    /**
      * @param string $dir See 'DIR_*' class constants
      * @return string
      */
