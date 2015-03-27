@@ -2,11 +2,16 @@
 
 namespace horses\auth;
 
-
 interface User
 {
     /**
-     * @return string
+     * @return UserId
      */
-    public function getId();
+    public function getUserId();
+
+    /**
+     * @param Authorization $authorization
+     * @return boolean
+     */
+    public function hasAuthorization(Authorization $authorization);
 }

@@ -9,9 +9,8 @@ class ServerContext extends ParameterBag
     const DEFAULT_ENV = 'prod';
 
     const DIR_ROOT = 'DIR_ROOT';
-    const DIR_APPLICATION = 'DIR_APPLICATION';
-    const DIR_LIB = 'DIR_LIB';
-    const DIR_CONTROLLERS = 'DIR_CONTROLLERS';
+    const DIR_SRC = 'DIR_LIB';
+    const DIR_ACTIONS = 'DIR_ACTIONS';
     const DIR_CONFIG = 'DIR_CONFIG';
     const DIR_PUBLIC = 'DIR_PUBLIC';
 

@@ -2,31 +2,26 @@
 
 namespace horses\action;
 
-use horses\auth\Authenticator;
+use horses\auth\Authorization;
 use horses\auth\User;
-use horses\auth\UserCredentialsFactory;
 use horses\auth\UserFactory;
+
 
 interface AuthenticatedAction
 {
     /**
-     * @return UserCredentialsFactory|null
+     * @return Authorization
      */
-    public function getCredentialsFactory();
-
-    /**
-     * @return Authenticator
-     */
-    public function getAuthenticator();
-
-    /**
-     * @return UserFactory
-     */
-    public function getUserFactory();
+    public function getAuthorizationNeeded();
 
     /**
      * @param User $user
      * @return mixed
      */
     public function setAuthentication(User $user);
+
+    /**
+     * @return UserFactory
+     */
+    public function getUserFactory();
 }

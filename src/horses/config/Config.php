@@ -4,7 +4,7 @@ namespace horses\config;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 
-class Config implements QueryableInterface
+class Config implements Queriable
 {
     const LEVEL_SEPARATOR = '.';
 

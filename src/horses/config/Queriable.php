@@ -2,7 +2,7 @@
 
 namespace horses\config;
 
-interface QueryableInterface
+interface Queriable
 {
     /**
      * Get a value, values are namespaced by dots

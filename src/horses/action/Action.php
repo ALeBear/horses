@@ -2,15 +2,14 @@
 
 namespace horses\action;
 
-use horses\responder\ResponderInterface;
+use horses\responder\Responder;
+use Symfony\Component\HttpFoundation\Request;
 
 interface Action
 {
-    public function getAuthorizationsNeeded();
-
     /**
      * @param Request $request
-     * @return ResponderInterface
+     * @return Responder
      */
     public function execute(Request $request);
 }

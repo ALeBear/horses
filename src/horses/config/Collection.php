@@ -5,7 +5,7 @@ namespace horses\config;
 /**
  * A collection of config files
  */
-class Collection implements QueryableInterface
+class Collection implements Queriable
 {
     /** @var Factory */
     protected $factory;
@@ -50,6 +50,20 @@ class Collection implements QueryableInterface
         list($configName, $param) = $this->getConfigNameAndKey($name);
         $this->configs[$configName]->set($param, $value);
         return $this;
+    }
+
+    /**
+     * @param $name
+     * @return Config
+     * @throws UnknownConfigException
+     */
+    public function getSection($name)
+    {
+        if (!$this->hasSection($name)) {
+            throw new UnknownConfigException(sprintf("Config not loaded: %s", $name));
+        }
+
+        return $this->configs[$name];
     }
 
     /**

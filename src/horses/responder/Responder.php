@@ -2,7 +2,7 @@
 
 namespace horses\responder;
 
-interface ResponderInterface
+interface Responder
 {
     public function output();
 }

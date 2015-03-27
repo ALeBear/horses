@@ -2,6 +2,7 @@
 
 namespace horses;
 
+use horses\auth\UserId;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class State
@@ -17,20 +18,20 @@ class State
     }
 
     /**
-     * @return string
+     * @return UserId
      */
     public function getUserId()
     {
-        return $this->session->get(self::USER_KEY);
+        return new UserId($this->session->get(self::USER_KEY));
     }
 
     /**
-     * @param string $userId
+     * @param UserId $userId
      * @return $this
      */
-    public function saveUserId($userId)
+    public function saveUserId(UserId $userId)
     {
-        $this->session->set(self::USER_KEY, $userId);
+        $this->session->set(self::USER_KEY, $userId->getId());
         return $this;
     }
 

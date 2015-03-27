@@ -2,95 +2,90 @@
 
 namespace horses;
 
+use horses\action\Action;
+use horses\config\Collection as ConfigCollection;
+use horses\config\Config;
 use Symfony\Component\HttpFoundation\Request;
+use horses\config\UnknownConfigException;
 
-/**
- * Very simple routing class. 
- * Options recognized by buildRoute:
- * - absolute
- */
 class Router
 {
-    /**
-     * @var string[]
-     */
-    protected $prefixes = array();
+    const DEFAULT_ACTION = 'index';
+    const CONFIG_SECTION = 'router';
+    const CONFIG_KEY_PREFIX = 'prefix';
 
-    
+    /** @var  ServerContext */
+    protected $serverContext;
+    /** @var  Config */
+    protected $config;
+
+
     /**
-     * Do the routing, i.e. set ROUTE/MODULE/ACTION request attribute
-     * (ROUTE = "controller/action") and reinject parameters passed in path
-     * inside request
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \horses\Router $this
+     * @param ServerContext $serverContext
+     * @param ConfigCollection $configs
+     * @throws UnknownConfigException
+     */
+    public function __construct(ServerContext $serverContext, ConfigCollection $configs)
+    {
+        $this->config = $configs->load(self::CONFIG_SECTION)->getSection(self::CONFIG_SECTION);
+    }
+
+    /**
+     * @param Request $request
+     * @return Action
+     * @throws UnknownRouteException
      */
     public function route(Request $request)
     {
-        $params = array();
+        list($actionName, $routeParameters) = $this->breakdownRoute($request);
+        $actionClass = $this->ucWordize($actionName);
+        if (!class_exists($actionClass)) {
+            throw new UnknownRouteException(sprintf('Cannod find action: %s', $actionClass));
+        }
+        $request->query->add($routeParameters);
+
+        return new $actionClass();
+    }
+
+    /**
+     * @param Request $request
+     * @return string[]
+     */
+    protected function breakdownRoute(Request $request)
+    {
         $parts = explode('/', rtrim($request->getPathInfo(), '/'));
         array_shift($parts);
-        foreach ($this->prefixes as $prefix) {
-            count($parts ) && $parts[0] == $prefix && array_shift($parts);
+        if ($prefix = $this->config->get(self::CONFIG_KEY_PREFIX)) {
+            if (count($parts) && $parts[0] == $prefix) {
+                array_shift($parts);
+            }
         }
-        $module = count($parts) ? array_shift($parts) : Route::DEFAULT_MODULE;
-        $action = (count($parts) ? array_shift($parts) : Route::DEFAULT_ACTION);
+
+        $actionName = (count($parts) ? array_shift($parts) : self::DEFAULT_ACTION);
+        $params = [];
         while (count($parts)) {
             $params[array_shift($parts)] = count($parts) ? array_shift($parts) : null;
         }
-        $request->attributes->set('MODULE', $module);
-        $request->attributes->set('ACTION', $action);
-        $request->attributes->set('ROUTE', sprintf('%s/%s', $module, $action));
-        $request->query->add($params);
-
-        return $this;
+        return [$actionName, $params];
     }
 
-    /**
-     * @param string $prefix
-     * @return \horses\Router $this
-     */
-    public function addPrefix($prefix)
+  /**
+   * Transforms a dashed-string into a UCWorded one: DashedString
+   * @param string $dashedString
+   * @return string
+   */
+    public function ucWordize($dashedString)
     {
-        if ((string) $prefix !== '') {
-            $this->prefixes[] = $prefix;
-        }
-        return $this;
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', strtolower($dashedString))));
     }
 
     /**
-     * @param string $route The "module/action" combo in one string
-     * @param array $query Query string parameters, will be in the url itself
-     * @param array $options
-     * @return \horses\Route
-     */
-    public function buildRoute($route, array $query = array(), array $options = array())
-    {
-        return new Route($route, $query, array_merge($options, array('prefix' => $this->getPrefix())));
-    }
-    
-    /**
-     * @param \horses\Route $route
-     */
-    public function redirect(Route $route)
-    {
-        self::redirectExternal($route->addOptions(array('prefix' => $this->getPrefix()))->getUrl());
-    }
-    
-    /**
-     * @param string $url
-     */
-    public static function redirectExternal($url)
-    {
-        header(sprintf('Location: %s', $url));
-        exit;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getPrefix()
-    {
-        $prefix = implode('/', $this->prefixes);
-        return $prefix ? '/' . $prefix : '';
+    * Transforms a UpperCasedWords string to a dashed one: upper-case-words
+    * @param string $ucWordsString
+    * @return string
+    */
+    public function dash($ucWordsString) {
+      return implode('-',array_map('strtolower',
+              preg_split('/([A-Z]{1}[^A-Z]*)/', $ucWordsString, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY)));
     }
 }
