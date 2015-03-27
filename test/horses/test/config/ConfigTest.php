@@ -7,9 +7,7 @@ use horses\config\Config;
 
 class ConfigTest extends AbstractTest
 {
-    /**
-     * @var Config
-     */
+    /** @var Config */
     protected $config;
     
     

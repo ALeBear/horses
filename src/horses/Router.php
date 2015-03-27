@@ -8,11 +8,17 @@ use horses\config\Config;
 use Symfony\Component\HttpFoundation\Request;
 use horses\config\UnknownConfigException;
 
+/**
+ * This router will build action classes as (ActionName is Wordize()d version of the first URL segment):
+ * - $config->get('router.action_template')\ActionName (if the config param is set)
+ * - $serverContext->getApplication()\action\ActionName
+ */
 class Router
 {
     const DEFAULT_ACTION = 'index';
     const CONFIG_SECTION = 'router';
     const CONFIG_KEY_PREFIX = 'prefix';
+    const CONFIG_KEY_ACTION_NAMESPACE = 'action_namespace';
 
     /** @var  ServerContext */
     protected $serverContext;
@@ -39,7 +45,13 @@ class Router
     public function route(Request $request)
     {
         list($actionName, $routeParameters) = $this->breakdownRoute($request);
-        $actionClass = sprintf('%s\\action\\%s', $this->serverContext->geApplication(), $this->ucWordize($actionName));
+
+        $template = $this->config->get(
+            self::CONFIG_KEY_ACTION_NAMESPACE,
+            sprintf('%s\\action', $this->serverContext->getApplication())
+        );
+        $actionClass = sprintf('%s\\%s', $template, self::wordize($actionName));
+
         if (!class_exists($actionClass)) {
             throw new UnknownRouteException(sprintf('Cannod find action: %s', $actionClass));
         }
@@ -75,7 +87,7 @@ class Router
    * @param string $dashedString
    * @return string
    */
-    public function ucWordize($dashedString)
+    public static function wordize($dashedString)
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', strtolower($dashedString))));
     }
@@ -85,7 +97,7 @@ class Router
     * @param string $ucWordsString
     * @return string
     */
-    public function dash($ucWordsString) {
+    public static  function dashize($ucWordsString) {
       return implode('-',array_map('strtolower',
               preg_split('/([A-Z]{1}[^A-Z]*)/', $ucWordsString, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY)));
     }

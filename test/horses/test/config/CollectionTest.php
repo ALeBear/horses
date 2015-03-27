@@ -9,9 +9,7 @@ use horses\config\UnknownConfigException;
 
 class CollectionTest extends AbstractTest
 {
-    /**
-     * @var Collection
-     */
+    /** @var Collection */
     protected $collection;
     
     
@@ -77,5 +75,18 @@ class CollectionTest extends AbstractTest
     public function testSet()
     {
         $this->assertEquals('foo', $this->collection->set('one.any', 'newValue')->get('one.any'));
+    }
+
+    public function testGetSection()
+    {
+        $this->assertEquals('foo', $this->collection->getSection('one')->get('any'));
+    }
+
+    /**
+     * @expectedException \horses\config\UnknownConfigException
+     */
+    public function testGetSectionHasNone()
+    {
+        $this->collection->getSection('greublah');
     }
 }

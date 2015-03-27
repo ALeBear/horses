@@ -2,7 +2,7 @@
 
 namespace horses\auth;
 
-interface UserCredentials
+interface Credentials
 {
     /**
      * @return string

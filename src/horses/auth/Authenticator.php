@@ -49,7 +49,7 @@ class Authenticator
         }
 
         if ($action instanceof AuthenticatingAction) {
-            $userId = $action->getAuthenticator()->getUserId($action->getCredentialsFactory()->getCredentials());
+            $userId = $action->getUserIdFactory()->getUserId($action->getCredentialsFactory()->getCredentials());
             if ($userId) {
                 if ($action instanceof StatefulAction) {
                     $action->getState()->saveUserId($userId);

@@ -22,7 +22,7 @@ class State
      */
     public function getUserId()
     {
-        return new UserId($this->session->get(self::USER_KEY));
+        return $this->session->get(self::USER_KEY) ? new UserId($this->session->get(self::USER_KEY)) : null;
     }
 
     /**

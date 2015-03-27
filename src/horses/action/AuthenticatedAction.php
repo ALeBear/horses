@@ -16,9 +16,9 @@ interface AuthenticatedAction
 
     /**
      * @param User $user
-     * @return mixed
+     * @return $this
      */
-    public function setAuthentication(User $user);
+    public function setAuthentication(User $user = null);
 
     /**
      * @return UserFactory

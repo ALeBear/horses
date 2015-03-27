@@ -5,8 +5,8 @@ namespace horses\auth;
 interface UserIdFactory
 {
     /**
-     * @param UserCredentials $credentials
-     * @return UserId
+     * @param Credentials|null $credentials
+     * @return UserId|null
      */
-    public function getUserId(UserCredentials $credentials);
+    public function getUserId(Credentials $credentials = null);
 }

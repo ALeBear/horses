@@ -4,20 +4,23 @@ namespace horses\config;
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Config\Loader\FileLoader;
+use InvalidArgumentException;
 
 class YamlFileLoader extends FileLoader
 {
     /** @inheritdoc */
     public function load($resource, $type = null)
     {
-        $resource = sprintf('%s.yml', $resource);
+        if (substr($resource, -4) != '.yml') {
+            $resource = sprintf('%s.yml', $resource);
+        }
         $configs = [];
         try {
             foreach ($this->locator->locate($resource, null, false) as $aFile) {
                 $parsed = Yaml::parse($aFile);
                 $configs[] = $parsed ? $parsed : [];
             }
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $configs[] = [];
         }
         
@@ -29,5 +32,4 @@ class YamlFileLoader extends FileLoader
     {
         return is_string($resource) && 'yml' === pathinfo($resource, PATHINFO_EXTENSION);
     }
-
 }

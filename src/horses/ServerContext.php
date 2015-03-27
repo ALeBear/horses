@@ -25,7 +25,7 @@ class ServerContext extends ParameterBag
     /**
      * @return string
      */
-    public function geApplication()
+    public function getApplication()
     {
         return $this->get('APP');
     }

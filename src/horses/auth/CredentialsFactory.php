@@ -2,10 +2,10 @@
 
 namespace horses\auth;
 
-interface UserCredentialsFactory
+interface CredentialsFactory
 {
     /**
-     * @return UserCredentials
+     * @return Credentials
      */
     public function getCredentials();
 }
