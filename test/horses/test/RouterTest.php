@@ -105,6 +105,20 @@ class RouterTest extends AbstractTest
         $this->assertEquals(['param1' => 'value1', 'param2' => 'value2', 'param3' => null], $params);
     }
 
+    public function testGetUrlFromAction()
+    {
+
+        $this->assertEquals('/', $this->router->getUrlFromAction(Router::DEFAULT_ACTION));
+        $this->assertEquals(sprintf('/%s/foo/bar', Router::DEFAULT_ACTION), $this->router->getUrlFromAction(Router::DEFAULT_ACTION, ['foo' => 'bar']));
+        $this->assertEquals('/blah-but-yes', $this->router->getUrlFromAction('BlahButYes'));
+        $this->assertEquals('/blah-but-yes/foo/bar/foo2/bar2', $this->router->getUrlFromAction('BlahButYes', ['foo' => 'bar', 'foo2' => 'bar2']));
+        $this->routePrefix = 'prefix';
+        $this->assertEquals('/prefix/', $this->router->getUrlFromAction(Router::DEFAULT_ACTION));
+        $this->assertEquals(sprintf('/prefix/%s/foo/bar', Router::DEFAULT_ACTION), $this->router->getUrlFromAction(Router::DEFAULT_ACTION, ['foo' => 'bar']));
+        $this->assertEquals('/prefix/blah-but-yes', $this->router->getUrlFromAction('BlahButYes'));
+        $this->assertEquals('/prefix/blah-but-yes/foo/bar/foo2/bar2', $this->router->getUrlFromAction('BlahButYes', ['foo' => 'bar', 'foo2' => 'bar2']));
+    }
+
     /**
      * @expectedException \horses\UnknownRouteException
      */

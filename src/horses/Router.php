@@ -53,11 +53,29 @@ class Router
         $actionClass = sprintf('%s\\%s', $template, self::wordize($actionName));
 
         if (!class_exists($actionClass)) {
-            throw new UnknownRouteException(sprintf('Cannod find action: %s', $actionClass));
+            throw new UnknownRouteException(sprintf('Cannot find action: %s', $actionClass));
         }
         $request->query->add($routeParameters);
 
         return new $actionClass();
+    }
+
+    /**
+     * @param string $actionClassName
+     * @param string[] $queryStringParameters
+     * @return string
+     */
+    public function getUrlFromAction($actionClassName, $queryStringParameters = [])
+    {
+        $url = $this->config->get(self::CONFIG_KEY_PREFIX) ? '/' . $this->config->get(self::CONFIG_KEY_PREFIX) . '/' : '/';
+        if (count($queryStringParameters) || $actionClassName != self::DEFAULT_ACTION) {
+            $url .= self::dashize($actionClassName);
+        }
+        foreach ($queryStringParameters as $name => $value) {
+            $url .= sprintf('/%s/%s', $name, urlencode($value));
+        }
+
+        return $url;
     }
 
     /**
