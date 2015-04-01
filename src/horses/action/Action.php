@@ -3,7 +3,7 @@
 namespace horses\action;
 
 use horses\responder\Responder;
-use Symfony\Component\HttpFoundation\Request;
+use horses\Request;
 
 interface Action
 {

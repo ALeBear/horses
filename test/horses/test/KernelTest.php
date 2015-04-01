@@ -1,9 +1,8 @@
 <?php
 
-namespace horses\test\config;
+namespace horses\test;
 
 use horses\ServerContext;
-use horses\test\AbstractTest;
 use horses\Kernel;
 
 class KernelTest extends AbstractTest

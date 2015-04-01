@@ -5,7 +5,6 @@ namespace horses;
 use horses\action\Action;
 use horses\config\Collection as ConfigCollection;
 use horses\config\Config;
-use Symfony\Component\HttpFoundation\Request;
 use horses\config\UnknownConfigException;
 
 /**

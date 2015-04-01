@@ -1,8 +1,7 @@
 <?php
 
-namespace horses\test\config;
+namespace horses\test;
 
-use horses\test\AbstractTest;
 use horses\Router;
 
 class RouterTest extends AbstractTest
@@ -57,7 +56,7 @@ class RouterTest extends AbstractTest
 
     public function testRoute()
     {
-        $request = $this->getBasicMock('\Symfony\Component\HttpFoundation\Request');
+        $request = $this->getBasicMock('\horses\Request');
         $request->query = $this->getBasicMock('\Symfony\Component\HttpFoundation\ParameterBag');
         $request->expects($this->any())
             ->method('getPathInfo')
@@ -70,7 +69,7 @@ class RouterTest extends AbstractTest
      */
     public function testRouteNoActionNamespace()
     {
-        $request = $this->getBasicMock('\Symfony\Component\HttpFoundation\Request');
+        $request = $this->getBasicMock('\horses\Request');
         $request->query = $this->getBasicMock('\Symfony\Component\HttpFoundation\ParameterBag');
         $request->expects($this->any())
             ->method('getPathInfo')
@@ -81,7 +80,7 @@ class RouterTest extends AbstractTest
 
     public function testRouteWithPrefix()
     {
-        $request = $this->getBasicMock('\Symfony\Component\HttpFoundation\Request');
+        $request = $this->getBasicMock('\horses\Request');
         $request->query = $this->getBasicMock('\Symfony\Component\HttpFoundation\ParameterBag');
         $request->expects($this->any())
             ->method('getPathInfo')
@@ -92,7 +91,7 @@ class RouterTest extends AbstractTest
 
     public function testRouteWithParams()
     {
-        $request = $this->getBasicMock('\Symfony\Component\HttpFoundation\Request');
+        $request = $this->getBasicMock('\horses\Request');
         $request->query = $this->getBasicMock('\Symfony\Component\HttpFoundation\ParameterBag');
         $params = [];
         $request->query->expects($this->any())
@@ -124,7 +123,7 @@ class RouterTest extends AbstractTest
      */
     public function testRouteUnknown()
     {
-        $request = $this->getBasicMock('\Symfony\Component\HttpFoundation\Request');
+        $request = $this->getBasicMock('\horses\Request');
         $request->query = $this->getBasicMock('\Symfony\Component\HttpFoundation\ParameterBag');
         $request->expects($this->any())
             ->method('getPathInfo')

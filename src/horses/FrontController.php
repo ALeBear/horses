@@ -6,7 +6,6 @@ use horses\action\AuthenticatedAction;
 use horses\auth\AuthenticationException;
 use horses\auth\Authenticator;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Request;
 use horses\action\StatefulAction;
 use horses\action\Action;
 use Exception;
@@ -26,7 +25,7 @@ class FrontController
             if ($action instanceof AuthenticatedAction) {
                 /** @var AuthenticatedAction $action */
                 $authenticator = new Authenticator();
-                $authenticator->authenticate($action);
+                $authenticator->authenticate($request, $action);
             }
 
             /** @var Action $action */
@@ -36,11 +35,11 @@ class FrontController
             die('404');
         } catch (AuthenticationException $e) {
             //400
-            die('400');
+            die('401');
         } catch (Exception $e) {
             echo '<pre>';print_r($e);
-            //500
-            die('500');
+            //400
+            die('400');
         }
 
         $responder->output();

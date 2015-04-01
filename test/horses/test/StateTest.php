@@ -1,8 +1,7 @@
 <?php
 
-namespace horses\test\config;
+namespace horses\test;
 
-use horses\test\AbstractTest;
 use horses\State;
 use Symfony\Component\HttpFoundation\Session\Session;
 

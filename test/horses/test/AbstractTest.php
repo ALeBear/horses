@@ -3,7 +3,7 @@
 namespace horses\test;
 
 use PHPUnit_Framework_TestCase;
-use Symfony\Component\HttpFoundation\Request;
+use horses\Request;
 use PHPUnit_Framework_MockObject_MockObject;
 
 abstract class AbstractTest extends PHPUnit_Framework_TestCase
@@ -23,7 +23,7 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
     /**
      * @param string $path
      * @param array $queryParameters
-     * @return \Symfony\Component\HttpFoundation\Request
+     * @return \horses\Request
      */
     protected function getRequest($path, array $queryParameters)
     {
