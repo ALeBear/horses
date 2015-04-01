@@ -17,6 +17,7 @@ use stagecoach\DummyAuthorization;
 use stagecoach\DummyUserFactory;
 use stagecoach\DummyUserIdFactory;
 use stagecoach\GetCredentialsFactory;
+use stagecoach\responder\StringResponder;
 
 class Login implements Action, StatefulAction, AuthenticatingAction, AuthenticatedAction
 {

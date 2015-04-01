@@ -2,6 +2,6 @@
 
 namespace horses\auth;
 
-use Exception;
+use horses\Exception;
 
 class AuthenticationException extends Exception {}

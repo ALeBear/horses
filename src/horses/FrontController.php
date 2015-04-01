@@ -3,6 +3,7 @@
 namespace horses;
 
 use horses\action\AuthenticatedAction;
+use horses\Exception as HorsesException;
 use horses\auth\AuthenticationException;
 use horses\auth\Authenticator;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -36,10 +37,14 @@ class FrontController
         } catch (AuthenticationException $e) {
             //400
             die('401');
-        } catch (Exception $e) {
-            echo '<pre>';print_r($e);
+        } catch (HorsesException $e) {
             //400
+            echo '<pre>';print_r($e);
             die('400');
+        } catch (Exception $e) {
+            //500
+            echo '<pre>';print_r($e);
+            die('500');
         }
 
         $responder->output();

@@ -1,6 +1,6 @@
 <?php
 
-namespace stagecoach\action;
+namespace stagecoach\responder;
 
 use horses\responder\Responder;
 

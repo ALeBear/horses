@@ -2,6 +2,6 @@
 
 namespace horses\config;
 
-use Exception;
+use horses\Exception;
 
 class InvalidConfigClassException extends Exception {}
