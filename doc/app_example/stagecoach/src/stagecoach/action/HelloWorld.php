@@ -4,14 +4,15 @@ namespace stagecoach\action;
 
 use horses\action\Action;
 use horses\Request;
-use stagecoach\responder\StringResponder;
+use horses\Router;
+use stagecoach\responder\String;
 
 class HelloWorld implements Action
 {
     /** @inheritdoc */
-    public function execute(Request $request)
+    public function execute(Request $request, Router $router)
     {
-        return new StringResponder('Hello, World!');
+        return new String('Hello, World!');
     }
 
 }

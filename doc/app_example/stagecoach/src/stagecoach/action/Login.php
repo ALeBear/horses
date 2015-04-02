@@ -11,13 +11,14 @@ use horses\auth\CredentialsFactory;
 use horses\auth\User;
 use horses\auth\UserFactory;
 use horses\auth\UserIdFactory;
+use horses\responder\Redirect;
 use horses\State;
 use horses\Request;
-use stagecoach\DummyAuthorization;
 use stagecoach\DummyUserFactory;
 use stagecoach\DummyUserIdFactory;
-use stagecoach\GetCredentialsFactory;
-use stagecoach\responder\StringResponder;
+use stagecoach\PostCredentialsFactory;
+use stagecoach\responder\LoginResponder;
+use horses\Router;
 
 class Login implements Action, StatefulAction, AuthenticatingAction, AuthenticatedAction
 {
@@ -42,7 +43,7 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
      */
     public function getCredentialsFactory()
     {
-        return new GetCredentialsFactory();
+        return new PostCredentialsFactory();
     }
 
     /**
@@ -58,7 +59,7 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
      */
     public function getAuthorizationNeeded()
     {
-        return new DummyAuthorization();
+        return null;
     }
 
     /**
@@ -78,9 +79,23 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
     }
 
     /** @inheritdoc */
-    public function execute(Request $request)
+    public function execute(Request $request, Router $router)
     {
-        return new StringResponder('Logged in! Try changing the get parameters.');
-    }
+        if ($this->getState()->getUserId()) {
+            return new Redirect($router->getUrlFromAction(NeedLogin::class));
+        }
 
+        $message = '';
+        if ($request->isMethod(Request::METHOD_POST)) {
+            $message = 'Wrong credentials';
+        }
+        $username = $request->getPostParam('username');
+        $password = $request->getPostParam('username');
+
+        $responder = new LoginResponder();
+        $responder->setCredentials($username, $password);
+        $responder->setMessage($message);
+
+        return $responder;
+    }
 }

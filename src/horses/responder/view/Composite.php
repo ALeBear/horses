@@ -1,8 +1,8 @@
 <?php
 
-namespace horses\responder;
+namespace horses\responder\view;
 
-interface CompositeView extends View
+interface Composite extends View
 {
     /**
      * @param string $name

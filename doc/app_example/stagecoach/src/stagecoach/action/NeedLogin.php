@@ -12,6 +12,8 @@ use horses\State;
 use horses\Request;
 use stagecoach\DummyAuthorization;
 use stagecoach\DummyUserFactory;
+use stagecoach\responder\String;
+use horses\Router;
 
 class NeedLogin implements Action, StatefulAction, AuthenticatedAction
 {
@@ -56,9 +58,9 @@ class NeedLogin implements Action, StatefulAction, AuthenticatedAction
     }
 
     /** @inheritdoc */
-    public function execute(Request $request)
+    public function execute(Request $request, Router $router)
     {
-        return new StringResponder('Congratulations! you are logged in.');
+        return new String('Congratulations! you are logged in.');
     }
 
 }

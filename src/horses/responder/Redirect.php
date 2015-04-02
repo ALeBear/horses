@@ -1,11 +1,12 @@
 <?php
 
 namespace horses\responder;
+use horses\Router;
 
 /**
  * @codeCoverageIgnore
  */
-class RedirectResponder implements Responder
+class Redirect implements Responder
 {
     /** @var  string */
     protected $url;
@@ -19,7 +20,7 @@ class RedirectResponder implements Responder
     }
 
     /** @inheritdoc */
-    public function output()
+    public function output(Router $router)
     {
         header(sprintf('Location: %s', $this->url));
     }

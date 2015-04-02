@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\responder;
+namespace horses\responder\view;
 
 interface View
 {

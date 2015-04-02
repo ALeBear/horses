@@ -66,6 +66,7 @@ class Router
      */
     public function getUrlFromAction($actionClassName, $queryStringParameters = [])
     {
+        $actionClassName = substr($actionClassName, strrpos($actionClassName, '\\') + 1);
         $url = $this->config->get(self::CONFIG_KEY_PREFIX) ? '/' . $this->config->get(self::CONFIG_KEY_PREFIX) . '/' : '/';
         if (count($queryStringParameters) || $actionClassName != self::DEFAULT_ACTION) {
             $url .= self::dashize($actionClassName);

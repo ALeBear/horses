@@ -1,6 +1,6 @@
 <?php
 
-namespace horses\config;
+namespace horses\responder\view;
 
 use horses\Exception;
 

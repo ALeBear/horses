@@ -2,7 +2,13 @@
 
 namespace horses\responder;
 
+use horses\Router;
+
 interface Responder
 {
-    public function output();
+    /**
+     * @param Router $router
+     * @return void
+     */
+    public function output(Router $router);
 }

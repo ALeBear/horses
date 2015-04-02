@@ -1,10 +1,8 @@
 <?php
 
-namespace horses\responder;
+namespace horses\responder\view;
 
-use horses\config\TemplateNotFoundException;
-
-abstract class FileTemplateView implements CompositeView
+abstract class FileTemplate implements Composite
 {
     /** @var mixed[] */
     protected $variables = [];

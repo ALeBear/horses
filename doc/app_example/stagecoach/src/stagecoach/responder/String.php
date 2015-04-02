@@ -3,8 +3,9 @@
 namespace stagecoach\responder;
 
 use horses\responder\Responder;
+use horses\Router;
 
-class StringResponder implements Responder
+class String implements Responder
 {
     /** @var string */
     protected $stringToDisplay;
@@ -18,7 +19,7 @@ class StringResponder implements Responder
     }
 
     /** @inheritdoc */
-    public function output()
+    public function output(Router $router)
     {
         echo $this->stringToDisplay;
     }
