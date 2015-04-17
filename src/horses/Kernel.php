@@ -3,10 +3,14 @@
 namespace horses;
 
 use horses\auth\Authenticator;
+use horses\doctrine\EntityManagerFactory;
+use horses\doctrine\ProxiesNotWritableException;
 use Symfony\Component\Config\FileLocator;
 use horses\config\YamlFileLoader;
 use horses\config\Collection as ConfigCollection;
 use horses\config\Factory;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMException;
 
 class Kernel
 {
@@ -75,6 +79,21 @@ class Kernel
     }
 
     /**
+     * @return EntityManager
+     * @throws KernelPanicException If temp dir not writable of some doctrine exception happens
+     */
+    public function getEntityManager()
+    {
+        try {
+            (new EntityManagerFactory($this->getConfigCollection(), $this->getServerContext()))->getEntityManager();
+        } catch (ProxiesNotWritableException $e) {
+            throw new KernelPanicException(sprintf("Temp dir not writable: %s", $this->serverContext->getPath(ServerContext::DIR_TMP)));
+        } catch (ORMException $e) {
+            throw new KernelPanicException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
      * @param ServerContext $context
      * @param $environment
      * @param $projectRootPath
@@ -88,6 +107,7 @@ class Kernel
         $context->set(ServerContext::DIR_ACTIONS, $context->getPath(ServerContext::DIR_ROOT) . '/action');
         $context->set(ServerContext::DIR_CONFIG, $context->getPath(ServerContext::DIR_ROOT) . '/config');
         $context->set(ServerContext::DIR_PUBLIC, $context->getPath(ServerContext::DIR_ROOT) . '/public');
+        $context->set(ServerContext::DIR_TMP, $context->getPath(ServerContext::DIR_ROOT) . '/tmp');
 
         return $context;
     }

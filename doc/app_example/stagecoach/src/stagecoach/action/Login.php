@@ -2,28 +2,28 @@
 
 namespace stagecoach\action;
 
+use Doctrine\ORM\EntityManager;
 use horses\action\Action;
 use horses\action\AuthenticatedAction;
 use horses\action\AuthenticatingAction;
+use horses\action\DoctrineAwareAction;
 use horses\action\StatefulAction;
-use horses\auth\Authorization;
-use horses\auth\CredentialsFactory;
 use horses\auth\User;
-use horses\auth\UserFactory;
-use horses\auth\UserIdFactory;
 use horses\responder\Redirect;
 use horses\State;
 use horses\Request;
-use stagecoach\DummyUserFactory;
 use stagecoach\DummyUserIdFactory;
 use stagecoach\PostCredentialsFactory;
 use stagecoach\responder\LoginResponder;
 use horses\Router;
+use stagecoach\UserFactory;
 
-class Login implements Action, StatefulAction, AuthenticatingAction, AuthenticatedAction
+class Login implements Action, StatefulAction, AuthenticatingAction, AuthenticatedAction, DoctrineAwareAction
 {
     /** @var  State */
     protected $state;
+    /** @var  EntityManager */
+    protected $entityManager;
 
 
     /** @inheritdoc */
@@ -38,44 +38,40 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
         return $this->state;
     }
 
-    /**
-     * @return CredentialsFactory
-     */
+    /** @inheritdoc */
     public function getCredentialsFactory()
     {
         return new PostCredentialsFactory();
     }
 
-    /**
-     * @return UserIdFactory
-     */
+    /** @inheritdoc */
     public function getUserIdFactory()
     {
         return new DummyUserIdFactory();
     }
 
-    /**
-     * @return Authorization
-     */
+    /** @inheritdoc */
     public function getAuthorizationNeeded()
     {
         return null;
     }
 
-    /**
-     * @param User $user
-     * @return $this
-     */
+    /** @inheritdoc */
     public function setAuthentication(User $user = null)
     {
     }
 
-    /**
-     * @return UserFactory
-     */
+    /** @inheritdoc */
+    public function setEntityManager(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        return $this;
+    }
+
+    /** @inheritdoc */
     public function getUserFactory()
     {
-        return new DummyUserFactory();
+        return new UserFactory($this->entityManager);
     }
 
     /** @inheritdoc */
