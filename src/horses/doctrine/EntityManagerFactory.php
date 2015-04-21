@@ -5,11 +5,14 @@ namespace horses\doctrine;
 use horses\config\Collection as ConfigCollection;
 use Doctrine\ORM\Tools\Setup as DoctrineSetup;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use horses\config\Config;
 use horses\ServerContext;
 
 class EntityManagerFactory
 {
+    const CONFIG_SECTION = 'doctrine';
+
     /** @var Config */
     protected $config;
     /** @var ServerContext */
@@ -18,10 +21,11 @@ class EntityManagerFactory
 
     /**
      * @param ConfigCollection $configCollection
+     * @param ServerContext $serverContext
      */
     public function __construct(ConfigCollection $configCollection, ServerContext $serverContext)
     {
-        $this->config = $configCollection->getSection('doctrine');
+        $this->config = $configCollection->load(self::CONFIG_SECTION)->getSection(self::CONFIG_SECTION);
         $this->serverContext = $serverContext;
     }
 
@@ -54,6 +58,8 @@ class EntityManagerFactory
             $loggerClass = sprintf('\Doctrine\DBAL\Logging\%s', $logger);
             $em->getConfiguration()->setSQLLogger(new $loggerClass());
         }
+
+        $em->getConfiguration()->setNamingStrategy(new UnderscoreNamingStrategy());
 
         return $em;
     }

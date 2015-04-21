@@ -2,27 +2,26 @@
 
 namespace stagecoach;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use horses\auth\UserFactory as HorsesAuthFactory;
 use horses\auth\UserId;
 
 class UserFactory implements HorsesAuthFactory
 {
-    /** @var EntityManager */
-    protected $entityManager;
+    /** @var EntityRepository */
+    protected $userRepository;
 
     /**
-     * @param EntityManager $entityManager
+     * @param EntityRepository $userRepository
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityRepository $userRepository)
     {
-        $this->entityManager = $entityManager;
+        $this->userRepository = $userRepository;
     }
 
     /** @inheritdoc */
     public function getUserFromId(UserId $userId)
     {
-        return $this->entityManager->getRepository('user')->findOneBy(['id' => $userId->getId()]);
+        return $this->userRepository->findOneBy(['id' => $userId->getId()]);
     }
-
 }

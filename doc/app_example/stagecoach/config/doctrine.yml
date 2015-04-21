@@ -4,6 +4,6 @@ doctrine:
 mysql:
   host: localhost
   username: stagecoach
-  password: stragecoach
+  password: stagecoach
   dbname: stagecoach
 

@@ -12,7 +12,7 @@ use horses\auth\User;
 use horses\responder\Redirect;
 use horses\State;
 use horses\Request;
-use stagecoach\DummyUserIdFactory;
+use stagecoach\UserIdFactory;
 use stagecoach\PostCredentialsFactory;
 use stagecoach\responder\LoginResponder;
 use horses\Router;
@@ -47,7 +47,7 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
     /** @inheritdoc */
     public function getUserIdFactory()
     {
-        return new DummyUserIdFactory();
+        return new UserIdFactory($this->entityManager->getRepository('stagecoach\User'));
     }
 
     /** @inheritdoc */
@@ -71,7 +71,7 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
     /** @inheritdoc */
     public function getUserFactory()
     {
-        return new UserFactory($this->entityManager);
+        return new UserFactory($this->entityManager->getRepository('stagecoach\User'));
     }
 
     /** @inheritdoc */

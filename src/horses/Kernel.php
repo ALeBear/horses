@@ -85,7 +85,7 @@ class Kernel
     public function getEntityManager()
     {
         try {
-            (new EntityManagerFactory($this->getConfigCollection(), $this->getServerContext()))->getEntityManager();
+            return (new EntityManagerFactory($this->getConfigCollection(), $this->getServerContext()))->getEntityManager();
         } catch (ProxiesNotWritableException $e) {
             throw new KernelPanicException(sprintf("Temp dir not writable: %s", $this->serverContext->getPath(ServerContext::DIR_TMP)));
         } catch (ORMException $e) {

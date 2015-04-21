@@ -6,7 +6,6 @@ use horses\action\AuthenticatedAction;
 use horses\action\DoctrineAwareAction;
 use horses\Exception as HorsesException;
 use horses\auth\AuthenticationException;
-use horses\auth\Authenticator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use horses\action\StatefulAction;
 use horses\action\Action;
@@ -25,15 +24,15 @@ class FrontController
                 $action->setState($this->getState());
             }
 
+            if ($action instanceof DoctrineAwareAction) {
+                /** @var DoctrineAwareAction $action */
+                $action->setEntityManager($kernel->getEntityManager());
+            }
+
             if ($action instanceof AuthenticatedAction) {
                 /** @var AuthenticatedAction $action */
                 $authenticator = $kernel->getAuthenticator();
                 $authenticator->authenticate($request, $action);
-            }
-
-            if ($action instanceof DoctrineAwareAction) {
-                /** @var DoctrineAwareAction $action */
-                $action->setEntityManager($kernel->getEntityManager());
             }
 
             /** @var Action $action */
