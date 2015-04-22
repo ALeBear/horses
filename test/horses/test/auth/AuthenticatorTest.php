@@ -157,7 +157,7 @@ class AuthenticatorTest extends AbstractTest
     }
 
     /**
-     * @expectedException \horses\auth\AuthenticationException
+     * @expectedException \horses\auth\AccessControlException
      */
     public function testAuthenticatingCredentialsUnauthorized()
     {

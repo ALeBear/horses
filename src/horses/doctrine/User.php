@@ -1,8 +1,8 @@
 <?php
 
-namespace stagecoach;
+namespace horses\doctrine;
 
-use horses\auth\Authorization;
+use horses\auth\AccessGrantsFactory;
 use horses\auth\User as AuthUser;
 use horses\auth\UserId;
 
@@ -29,10 +29,21 @@ class User implements AuthUser
      */
     protected $passwordHash;
 
+    /** @var AccessGrantsFactory */
+    protected $accessGrantsFactory;
+
 
     /**
-     * @return UserId
+     * @param AccessGrantsFactory $grantsFactory
+     * @return $this
      */
+    public function setGrantsFactory(AccessGrantsFactory $grantsFactory)
+    {
+        $this->accessGrantsFactory = $grantsFactory;
+        return $this;
+    }
+
+    /** @inheritdoc */
     public function getUserId()
     {
         return new UserId($this->id);
@@ -47,13 +58,9 @@ class User implements AuthUser
         return password_verify($password, $this->passwordHash);
     }
 
-    /**
-     * @param Authorization $authorization
-     * @return boolean
-     */
-    public function hasAuthorization(Authorization $authorization)
+    /** @inheritdoc */
+    public function getAccessGrants()
     {
-        return true;
+        return $this->accessGrantsFactory->getGrantsForUser($this);
     }
-
 }

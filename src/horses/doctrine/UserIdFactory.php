@@ -1,6 +1,6 @@
 <?php
 
-namespace stagecoach;
+namespace horses\doctrine;
 
 use horses\auth\Credentials;
 use horses\auth\UserIdFactory as HorsesUserIdFactory;

@@ -10,8 +10,7 @@ interface User
     public function getUserId();
 
     /**
-     * @param Authorization $authorization
-     * @return boolean
+     * @return AccessGrants
      */
-    public function hasAuthorization(Authorization $authorization);
+    public function getAccessGrants();
 }

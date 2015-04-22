@@ -1,1 +1,4 @@
-#action_namespace: namespace\to\action
+action:
+  #namespace: namespace\to\action
+  subnamespaces:
+    - admin

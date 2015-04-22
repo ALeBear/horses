@@ -14,22 +14,14 @@ class Authenticator
      * @param Request $request
      * @param AuthenticatingAction|AuthenticatedAction|StatefulAction $action
      * @return $this
-     * @throws AuthenticationException When authentication is missed
+     * @throws AccessControlException When authorization is failed
      */
     public function authenticate(Request $request, AuthenticatedAction $action)
     {
         $user = $this->getUser($request, $action);
-        $authorizationNeeded = $action->getAuthorizationNeeded();
-        if (!is_null($authorizationNeeded)) {
-            if (!$user || !$user->hasAuthorization($authorizationNeeded)) {
-                throw new AuthenticationException(
-                    sprintf('Missed authentication for action %s requesting authorization %s',
-                        get_class($action),
-                        $authorizationNeeded->__toString()
-                    )
-                );
-            }
-        }
+
+        $grants = $user ? $user->getAccessGrants() : new AccessGrantsNone();
+        $action->getAccessPolicy()->authorize($grants);
 
         $action->setAuthentication($user);
 

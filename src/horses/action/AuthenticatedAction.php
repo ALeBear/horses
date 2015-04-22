@@ -2,7 +2,7 @@
 
 namespace horses\action;
 
-use horses\auth\Authorization;
+use horses\auth\AccessPolicy;
 use horses\auth\User;
 use horses\auth\UserFactory;
 
@@ -10,9 +10,9 @@ use horses\auth\UserFactory;
 interface AuthenticatedAction
 {
     /**
-     * @return Authorization
+     * @return AccessPolicy
      */
-    public function getAuthorizationNeeded();
+    public function getAccessPolicy();
 
     /**
      * @param User $user

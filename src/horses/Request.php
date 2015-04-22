@@ -4,6 +4,9 @@ namespace horses;
 
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
+/**
+ * @method static $this createFromGlobals()
+ */
 class Request extends SymfonyRequest
 {
     /**

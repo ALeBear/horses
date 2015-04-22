@@ -5,7 +5,7 @@ namespace horses;
 use horses\action\AuthenticatedAction;
 use horses\action\DoctrineAwareAction;
 use horses\Exception as HorsesException;
-use horses\auth\AuthenticationException;
+use horses\auth\AccessControlException;
 use Symfony\Component\HttpFoundation\Session\Session;
 use horses\action\StatefulAction;
 use horses\action\Action;
@@ -40,7 +40,7 @@ class FrontController
         } catch (UnknownRouteException $e) {
             //404
             die('404');
-        } catch (AuthenticationException $e) {
+        } catch (AccessControlException $e) {
             //400
             die('401');
         } catch (HorsesException $e) {

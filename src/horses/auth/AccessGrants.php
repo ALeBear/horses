@@ -2,7 +2,7 @@
 
 namespace horses\auth;
 
-interface Authorization
+interface AccessGrants
 {
     /**
      * @return string

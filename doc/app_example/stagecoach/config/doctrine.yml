@@ -1,6 +1,6 @@
 doctrine:
   driver: pdo_mysql
-  logger: EchoSQLLogger
+  #logger: EchoSQLLogger
 mysql:
   host: localhost
   username: stagecoach

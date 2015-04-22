@@ -3,20 +3,24 @@
 namespace stagecoach\action;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use horses\action\Action;
 use horses\action\AuthenticatedAction;
 use horses\action\AuthenticatingAction;
 use horses\action\DoctrineAwareAction;
 use horses\action\StatefulAction;
+use horses\auth\NoRestrictionAccessPolicy;
 use horses\auth\User;
+use horses\doctrine\SimpleAccessGrantsFactory;
 use horses\responder\Redirect;
 use horses\State;
 use horses\Request;
-use stagecoach\UserIdFactory;
+use horses\doctrine\UserIdFactory;
+use horses\doctrine\UserFactory;
+use stagecoach\action\admin\Index;
 use stagecoach\PostCredentialsFactory;
 use stagecoach\responder\LoginResponder;
 use horses\Router;
-use stagecoach\UserFactory;
 
 class Login implements Action, StatefulAction, AuthenticatingAction, AuthenticatedAction, DoctrineAwareAction
 {
@@ -47,13 +51,13 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
     /** @inheritdoc */
     public function getUserIdFactory()
     {
-        return new UserIdFactory($this->entityManager->getRepository('stagecoach\User'));
+        return new UserIdFactory($this->getUserEntityRepository());
     }
 
     /** @inheritdoc */
-    public function getAuthorizationNeeded()
+    public function getAccessPolicy()
     {
-        return null;
+        return new NoRestrictionAccessPolicy();
     }
 
     /** @inheritdoc */
@@ -71,14 +75,14 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
     /** @inheritdoc */
     public function getUserFactory()
     {
-        return new UserFactory($this->entityManager->getRepository('stagecoach\User'));
+        return new UserFactory($this->getUserEntityRepository(), new SimpleAccessGrantsFactory($this->entityManager->getRepository('horses\doctrine\SimpleAccessCode')));
     }
 
     /** @inheritdoc */
     public function execute(Request $request, Router $router)
     {
         if ($this->getState()->getUserId()) {
-            return new Redirect($router->getUrlFromAction(NeedLogin::class));
+            return new Redirect($router->getUrlFromAction(Index::class));
         }
 
         $message = '';
@@ -93,5 +97,13 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
         $responder->setMessage($message);
 
         return $responder;
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    protected function getUserEntityRepository()
+    {
+        return $this->entityManager->getRepository('horses\doctrine\User');
     }
 }

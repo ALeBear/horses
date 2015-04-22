@@ -4,4 +4,4 @@ namespace horses\auth;
 
 use horses\Exception;
 
-class AuthenticationException extends Exception {}
+class AccessControlException extends Exception {}
