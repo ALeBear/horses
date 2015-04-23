@@ -13,4 +13,9 @@ interface User
      * @return AccessGrants
      */
     public function getAccessGrants();
+
+    /**
+     * @return string
+     */
+    public function __toString();
 }

@@ -24,6 +24,12 @@ class User implements AuthUser
     protected $username;
 
     /**
+     * @Column(type="string", length=100)
+     * @var string
+     */
+    protected $name;
+
+    /**
      * @Column(type="string", length=255)
      * @var string
      */
@@ -62,5 +68,11 @@ class User implements AuthUser
     public function getAccessGrants()
     {
         return $this->accessGrantsFactory->getGrantsForUser($this);
+    }
+
+    /** @inheritdoc */
+    public function __toString()
+    {
+        return $this->name;
     }
 }

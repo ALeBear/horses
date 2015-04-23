@@ -14,14 +14,17 @@ use horses\Router;
 use horses\action\StatefulAction;
 use horses\action\AuthenticatedAction;
 use horses\State;
-use stagecoach\responder\StaticTextResponder;
+use horses\doctrine\User as DoctrineUser;
+use stagecoach\responder\admin\IndexResponder;
 
 class Index implements Action, StatefulAction, AuthenticatedAction, DoctrineAwareAction
 {
-    /** @var  State */
+    /** @var State */
     protected $state;
-    /** @var  EntityManager */
+    /** @var EntityManager */
     protected $entityManager;
+    /** @var DoctrineUser */
+    protected $user;
 
 
     /** @inheritdoc */
@@ -42,12 +45,10 @@ class Index implements Action, StatefulAction, AuthenticatedAction, DoctrineAwar
         return new SimpleAccessPolicy(['admin']);
     }
 
-    /**
-     * @param User $user
-     * @return $this
-     */
+    /** @inheritdoc */
     public function setAuthentication(User $user = null)
     {
+        $this->user = $user;
     }
 
     /** @inheritdoc */
@@ -70,6 +71,9 @@ class Index implements Action, StatefulAction, AuthenticatedAction, DoctrineAwar
     /** @inheritdoc */
     public function execute(Request $request, Router $router)
     {
-        return new StaticTextResponder("Bienvenue dans la section d'administration.");
+        $responder = new IndexResponder("Bienvenue dans la section d'administration.");
+        $responder->setUsername($this->user->__toString());
+
+        return $responder;
     }
 }

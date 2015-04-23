@@ -22,6 +22,7 @@ class StaticTextResponder implements Responder
     public function output(Router $router)
     {
         $layout = new BasicLayout();
+        $layout->addVariable('menu', '');
         $layout->addVariable('content', $this->text);
         echo $layout->getRendering();
     }

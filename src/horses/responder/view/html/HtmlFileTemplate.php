@@ -22,4 +22,14 @@ abstract class HtmlFileTemplate extends FileTemplate
     {
         return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE);
     }
+
+    /**
+     * @param Partial $partial
+     * @return string
+     */
+    public function renderPartial(Partial $partial)
+    {
+        $partial->addVariables($this->variables);
+        return $partial->getRendering();
+    }
 }
