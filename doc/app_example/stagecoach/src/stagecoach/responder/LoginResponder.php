@@ -41,6 +41,7 @@ class LoginResponder implements Responder
     public function output(Router $router)
     {
         $layout = new BasicLayout();
+        $layout->setRouter($router);
         $layout->addVariable('menu', '');
         $layout->addVariable('username', $this->username);
         $layout->addVariable('password', $this->password);

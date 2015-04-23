@@ -65,7 +65,7 @@ class Router
      * @param string[] $queryStringParameters
      * @return string
      */
-    public function getUrlFromAction($actionClassName, $queryStringParameters = [])
+    public function getUrlFromAction($actionClassName, array $queryStringParameters = [])
     {
         $classParts = explode('\\', $actionClassName);
         $actionClassName = array_pop($classParts);

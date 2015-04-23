@@ -7,12 +7,6 @@ SET time_zone = "+05:00";
 --
 USE `stagecoach`;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `user`
---
-
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -37,3 +31,18 @@ CREATE TABLE IF NOT EXISTS `simple_access_code` (
   `code` varchar(30) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `article`;
+CREATE TABLE IF NOT EXISTS `article` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `codename` varchar(30) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` varchar(5000) NOT NULL,
+  `flags` int(11) unsigned NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
