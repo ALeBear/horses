@@ -2,6 +2,7 @@
 
 namespace horses\test\config;
 
+use horses\auth\AccessControlException;
 use horses\auth\UserId;
 use horses\test\AbstractTest;
 use horses\auth\Authenticator;
@@ -32,8 +33,13 @@ class AuthenticatorTest extends AbstractTest
         $action->expects($this->any())
             ->method('setAuthentication')
             ->will($this->returnCallback(function($createdUser) use (&$user) {$user = $createdUser;}));
+        $action->expects($this->any())
+            ->method('getAccessPolicy')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessPolicy')));
 
-        $this->authenticator->authenticate($action);
+        $request = $this->getBasicMock('\horses\Request');
+
+        $this->authenticator->authenticate($request, $action);
         $this->assertNull($user);
     }
 
@@ -47,6 +53,9 @@ class AuthenticatorTest extends AbstractTest
             ->will($this->returnValue(new UserId('foo')));
 
         $instantiatedUser = $this->getBasicMock('\horses\auth\User');
+        $instantiatedUser->expects($this->any())
+            ->method('getAccessGrants')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessGrants')));
         $userFactory = $this->getBasicMock('\horses\auth\UserFactory');
         $userFactory->expects($this->any())
             ->method('getUserFromId')
@@ -70,8 +79,11 @@ class AuthenticatorTest extends AbstractTest
         $action->expects($this->any())
             ->method('getCredentialsFactory')
             ->will($this->returnValue($credentialsFactory));
+        $action->expects($this->any())
+            ->method('getAccessPolicy')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessPolicy')));
 
-        $this->authenticator->authenticate($action);
+        $this->authenticator->authenticate($this->getBasicMock('\horses\Request'), $action);
         $this->assertEquals($instantiatedUser, $user);
     }
 
@@ -107,8 +119,11 @@ class AuthenticatorTest extends AbstractTest
         $action->expects($this->any())
             ->method('getCredentialsFactory')
             ->will($this->returnValue($credentialsFactory));
+        $action->expects($this->any())
+            ->method('getAccessPolicy')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessPolicy')));
 
-        $this->authenticator->authenticate($action);
+        $this->authenticator->authenticate($this->getBasicMock('\horses\Request'), $action);
         $this->assertNull($user);
     }
 
@@ -123,8 +138,8 @@ class AuthenticatorTest extends AbstractTest
 
         $instantiatedUser = $this->getBasicMock('\horses\auth\User');
         $instantiatedUser->expects($this->any())
-            ->method('hasAuthorization')
-            ->will($this->returnValue(true));
+            ->method('getAccessGrants')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessGrants')));
         $userFactory = $this->getBasicMock('\horses\auth\UserFactory');
         $userFactory->expects($this->any())
             ->method('getUserFromId')
@@ -151,8 +166,11 @@ class AuthenticatorTest extends AbstractTest
         $action->expects($this->any())
             ->method('getAuthorizationNeeded')
             ->will($this->returnValue($this->getBasicMock('\horses\auth\Authorization')));
+        $action->expects($this->any())
+            ->method('getAccessPolicy')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessPolicy')));
 
-        $this->authenticator->authenticate($action);
+        $this->authenticator->authenticate($this->getBasicMock('\horses\Request'), $action);
         $this->assertEquals($instantiatedUser, $user);
     }
 
@@ -170,8 +188,8 @@ class AuthenticatorTest extends AbstractTest
 
         $instantiatedUser = $this->getBasicMock('\horses\auth\User');
         $instantiatedUser->expects($this->any())
-            ->method('hasAuthorization')
-            ->will($this->returnValue(false));
+            ->method('getAccessGrants')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessGrants')));
         $userFactory = $this->getBasicMock('\horses\auth\UserFactory');
         $userFactory->expects($this->any())
             ->method('getUserFromId')
@@ -198,8 +216,15 @@ class AuthenticatorTest extends AbstractTest
         $action->expects($this->any())
             ->method('getAuthorizationNeeded')
             ->will($this->returnValue($this->getBasicMock('\horses\auth\Authorization')));
+        $accessPolicy = $this->getBasicMock('\horses\auth\AccessPolicy');
+        $accessPolicy->expects($this->any())
+            ->method('authorize')
+            ->will($this->throwException(new AccessControlException()));
+        $action->expects($this->any())
+            ->method('getAccessPolicy')
+            ->will($this->returnValue($accessPolicy));
 
-        $this->authenticator->authenticate($action);
+        $this->authenticator->authenticate($this->getBasicMock('\horses\Request'), $action);
         $this->assertEquals($instantiatedUser, $user);
     }
 
@@ -213,6 +238,9 @@ class AuthenticatorTest extends AbstractTest
             ->will($this->returnValue(new UserId('foo')));
 
         $instantiatedUser = $this->getBasicMock('\horses\auth\User');
+        $instantiatedUser->expects($this->any())
+            ->method('getAccessGrants')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessGrants')));
         $userFactory = $this->getBasicMock('\horses\auth\UserFactory');
         $userFactory->expects($this->any())
             ->method('getUserFromId')
@@ -228,8 +256,11 @@ class AuthenticatorTest extends AbstractTest
         $action->expects($this->any())
             ->method('getUserFactory')
             ->will($this->returnValue($userFactory));
+        $action->expects($this->any())
+            ->method('getAccessPolicy')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessPolicy')));
 
-        $this->authenticator->authenticate($action);
+        $this->authenticator->authenticate($this->getBasicMock('\horses\Request'), $action);
         $this->assertEquals($instantiatedUser, $user);
     }
 
@@ -252,6 +283,9 @@ class AuthenticatorTest extends AbstractTest
             ->will($this->returnValue(new UserId('foo')));
 
         $instantiatedUser = $this->getBasicMock('\horses\auth\User');
+        $instantiatedUser->expects($this->any())
+            ->method('getAccessGrants')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessGrants')));
         $userFactory = $this->getBasicMock('\horses\auth\UserFactory');
         $userFactory->expects($this->any())
             ->method('getUserFromId')
@@ -278,8 +312,11 @@ class AuthenticatorTest extends AbstractTest
         $action->expects($this->any())
             ->method('getCredentialsFactory')
             ->will($this->returnValue($credentialsFactory));
+        $action->expects($this->any())
+            ->method('getAccessPolicy')
+            ->will($this->returnValue($this->getBasicMock('\horses\auth\AccessPolicy')));
 
-        $this->authenticator->authenticate($action);
+        $this->authenticator->authenticate($this->getBasicMock('\horses\Request'), $action);
         $this->assertEquals($instantiatedUser, $user);
         $this->assertEquals(new UserId('foo'), $createdUserId);
     }

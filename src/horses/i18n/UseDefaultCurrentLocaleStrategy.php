@@ -4,6 +4,9 @@ namespace horses\i18n;
 
 use horses\Request;
 
+/**
+ * @codeCoverageIgnore
+ */
 class UseDefaultCurrentLocaleStrategy implements CurrentLocaleStrategy
 {
     /** @inheritdoc */

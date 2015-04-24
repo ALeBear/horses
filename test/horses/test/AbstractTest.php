@@ -33,4 +33,9 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
             'PHP_SELF' => '/index.php',
             'REQUEST_URI' => $path));
     }
+
+    protected function getFixturesPath()
+    {
+        return dirname(__DIR__) . '/fixtures';
+    }
 }

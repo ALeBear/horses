@@ -30,7 +30,7 @@ class Translator
      */
     public function getLocalizer()
     {
-        return $this->getLocalizer();
+        return $this->localizer;
     }
 
     /**

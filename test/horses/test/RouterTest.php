@@ -27,6 +27,7 @@ class RouterTest extends AbstractTest
             ->method('get')
             ->will($this->returnCallback(function ($key, $default) { $vals = [
                 Router::CONFIG_KEY_PREFIX => $this->routePrefix,
+                Router::CONFIG_KEY_ACTION_SUBNAMESPACES => '',
                 Router::CONFIG_KEY_ACTION_NAMESPACE => $this->actionNamespace
             ]; return $vals[$key];}));
         $configCollection = $this->getBasicMock('\horses\config\Collection');
