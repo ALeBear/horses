@@ -1,0 +1,13 @@
+locale:
+  available:        #Can be a single entry on the same line
+    - en_CA
+    - fr_CA
+  default: fr_CA    #If omitted, the first in the available list is taken
+  #The strategy to find the current locale. If ommitted, will use the "UseDefault" strategy.
+  #Can be either a namespaced class name or the prefix of a framework-provided strategy
+  #strategy_for_current: UseDefault
+
+dictionary:
+  paths:            #Relative to DIR_ROOT. Can be a single entry on the same line
+    - i18n
+

@@ -13,7 +13,7 @@ class ArticleEdit extends AbstractAction
     /** @inheritdoc */
     public function execute(Request $request, Router $router)
     {
-        $responder = new ArticleEditResponder();
+        $responder = (new ArticleEditResponder())->setTranslator($this->translator);
         $responder->setUsername($this->user->__toString());
 
         if ($request->isMethod(Request::METHOD_POST)) {
@@ -24,8 +24,7 @@ class ArticleEdit extends AbstractAction
         if ($request->getGetParam('id')) {
             $article = $this->entityManager->getRepository('stagecoach\journal\Article')->findOneBy(['id' => $request->getGetParam('id')]);
             if (!$article) {
-                //TODO: Set temp message and redirect to articles list
-                return new Redirect($router->getUrlFromAction(Index::class));
+                return new Redirect($router->getUrlFromAction(Index::class), $this->translator->translate('article_not_found'));
             }
         } else {
             $article = new Article();

@@ -5,16 +5,18 @@ namespace stagecoach\action\admin;
 use Doctrine\ORM\EntityManager;
 use horses\action\Action;
 use horses\action\DoctrineAwareAction;
+use horses\action\LocalizedAction;
 use horses\auth\User;
 use horses\doctrine\SimpleAccessGrantsFactory;
 use horses\doctrine\SimpleAccessPolicy;
 use horses\doctrine\UserFactory;
 use horses\action\StatefulAction;
 use horses\action\AuthenticatedAction;
+use horses\i18n\Translator;
 use horses\State;
 use horses\doctrine\User as DoctrineUser;
 
-abstract class AbstractAction implements Action, StatefulAction, AuthenticatedAction, DoctrineAwareAction
+abstract class AbstractAction implements Action, StatefulAction, AuthenticatedAction, DoctrineAwareAction, LocalizedAction
 {
     /** @var State */
     protected $state;
@@ -22,6 +24,8 @@ abstract class AbstractAction implements Action, StatefulAction, AuthenticatedAc
     protected $entityManager;
     /** @var DoctrineUser */
     protected $user;
+    /** @var Translator */
+    protected $translator;
 
 
     /** @inheritdoc */
@@ -63,5 +67,21 @@ abstract class AbstractAction implements Action, StatefulAction, AuthenticatedAc
         return new UserFactory(
             $this->entityManager->getRepository('horses\doctrine\User'),
             new SimpleAccessGrantsFactory($this->entityManager->getRepository('horses\doctrine\SimpleAccessCode')));
+    }
+
+    /**
+     * @param Translator $translator
+     * @return $this
+     */
+    public function setTranslator(Translator $translator)
+    {
+        $this->translator = $translator;
+
+        return $this;
+    }
+
+    protected function _($token)
+    {
+
     }
 }

@@ -2,15 +2,19 @@
 
 namespace stagecoach\responder\admin;
 
+use horses\i18n\Translator;
+use horses\responder\LocalizedResponder;
 use horses\responder\Responder;
 use horses\Router;
 
-abstract class AbstractResponder implements Responder
+abstract class AbstractResponder implements Responder, LocalizedResponder
 {
     /** @var  string */
     protected $username;
     /** @var  string */
     protected $message;
+    /** @var Translator */
+    protected $translator;
 
     /**
      * @param string $username
@@ -44,5 +48,16 @@ abstract class AbstractResponder implements Responder
         $layout->addVariable('message', $this->message);
 
         return $layout;
+    }
+
+    /**
+     * @param Translator $translator
+     * @return $this
+     */
+    public function setTranslator(Translator $translator)
+    {
+        $this->translator = $translator;
+
+        return $this;
     }
 }

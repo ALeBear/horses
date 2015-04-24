@@ -4,7 +4,9 @@ namespace horses;
 
 use horses\auth\Authenticator;
 use horses\doctrine\EntityManagerFactory;
+use horses\i18n\I18nFactory;
 use horses\doctrine\ProxiesNotWritableException;
+use horses\i18n\Translator;
 use Symfony\Component\Config\FileLocator;
 use horses\config\YamlFileLoader;
 use horses\config\Collection as ConfigCollection;
@@ -68,6 +70,15 @@ class Kernel
     public function getAuthenticator()
     {
         return new Authenticator();
+    }
+
+    /**
+     * @param Request $request
+     * @return Translator
+     */
+    public function getTranslator(Request $request)
+    {
+        return (new I18nFactory($this->configCollection, $this->serverContext))->getTranslator($request);
     }
 
     /**

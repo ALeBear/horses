@@ -4,6 +4,7 @@ namespace horses;
 
 use horses\action\AuthenticatedAction;
 use horses\action\DoctrineAwareAction;
+use horses\action\LocalizedAction;
 use horses\Exception as HorsesException;
 use horses\auth\AccessControlException;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -31,8 +32,12 @@ class FrontController
 
             if ($action instanceof AuthenticatedAction) {
                 /** @var AuthenticatedAction $action */
-                $authenticator = $kernel->getAuthenticator();
-                $authenticator->authenticate($request, $action);
+                $kernel->getAuthenticator()->authenticate($request, $action);
+            }
+
+            if ($action instanceof LocalizedAction) {
+                /** @var LocalizedAction $action */
+                $action->setTranslator($kernel->getTranslator($request));
             }
 
             /** @var Action $action */
