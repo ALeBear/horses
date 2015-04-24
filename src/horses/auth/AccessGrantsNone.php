@@ -2,6 +2,7 @@
 
 namespace horses\auth;
 
+/** @codeCoverageIgnore */
 class AccessGrantsNone implements AccessGrants
 {
     /** @inheritdoc */
