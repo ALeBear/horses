@@ -58,6 +58,10 @@ class LocalizerTest extends AbstractTest
         $localizer->setCurrentLocale('fr');
 
         $this->assertEquals('fr', $localizer->getCurrentLocale());
+
+        $localizer->setCurrentLocale('');
+
+        $this->assertEquals('fr', $localizer->getCurrentLocale());
     }
 
     /**

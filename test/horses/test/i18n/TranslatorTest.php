@@ -20,7 +20,7 @@ class TranslatorTest extends AbstractTest
         $this->localizer->expects($this->any())
             ->method('getAvailableLocales')
             ->will($this->returnValue(['en_CA', 'fr_CA']));
-        $this->translator = new Translator($this->localizer, [$this->getFixturesPath() . '/i18n']);
+        $this->translator = new Translator($this->localizer, [$this->getFixturesPath() . '/i18n', '/blah']);
     }
 
     public function testGetLocalizer()
