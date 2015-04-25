@@ -53,6 +53,10 @@ class KernelTest extends AbstractTest
     public function testConfigDirDoesNotExists()
     {
         new Kernel('/foo', 'fooEnv', $this->serverContext);
+    }
 
+    public function testGetTranslator()
+    {
+        $this->assertInstanceOf('\horses\i18n\Translator', $this->kernel->getTranslator($this->getBasicMock('\horses\Request')));
     }
 }

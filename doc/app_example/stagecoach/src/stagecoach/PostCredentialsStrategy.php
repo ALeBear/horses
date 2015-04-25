@@ -3,10 +3,10 @@
 namespace stagecoach;
 
 use horses\Request;
-use horses\auth\CredentialsFactory;
+use horses\auth\CredentialsStrategy;
 use horses\auth\UsernamePasswordCredentials;
 
-class PostCredentialsFactory implements CredentialsFactory
+class PostCredentialsStrategy implements CredentialsStrategy
 {
     /** @inheritdoc */
     public function getCredentials(Request $request)

@@ -4,7 +4,7 @@ namespace horses\auth;
 
 use horses\Request;
 
-interface CredentialsFactory
+interface CredentialsStrategy
 {
     /**
      * @param Request $request

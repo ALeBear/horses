@@ -92,6 +92,7 @@ class Kernel
     /**
      * @return EntityManager
      * @throws KernelPanicException If temp dir not writable of some doctrine exception happens
+     * @codeCoverageIgnore
      */
     public function getEntityManager()
     {

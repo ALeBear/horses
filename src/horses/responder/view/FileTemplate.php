@@ -55,15 +55,6 @@ abstract class FileTemplate implements Composite
     }
 
     /**
-     * Ought to be used for pre-rendering calculations
-     * @return $this
-     */
-    protected function preRender()
-    {
-        return $this;
-    }
-
-    /**
      * @return string
      */
     abstract protected function getTemplatePath();

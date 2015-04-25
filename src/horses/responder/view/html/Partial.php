@@ -14,4 +14,20 @@ abstract class Partial extends HtmlFileTemplate
     {
         $this->layout = $layout;
     }
+
+    /** @inheritdoc */
+    public function getRendering()
+    {
+        $this->preRender();
+        return parent::getRendering();
+    }
+
+    /**
+     * Can be used for pre-rendering calculations
+     * @return $this
+     */
+    protected function preRender()
+    {
+        return $this;
+    }
 }

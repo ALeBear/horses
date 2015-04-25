@@ -3,12 +3,12 @@
 namespace horses\action;
 
 use horses\auth\UserIdFactory;
-use horses\auth\CredentialsFactory;
+use horses\auth\CredentialsStrategy;
 
 interface AuthenticatingAction
 {
     /**
-     * @return CredentialsFactory
+     * @return CredentialsStrategy
      */
     public function getCredentialsFactory();
 

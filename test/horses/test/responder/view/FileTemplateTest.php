@@ -17,41 +17,41 @@ class FileTemplateTest extends AbstractTest
         $this->fileTemplate = $this->getMockForAbstractClass('\horses\responder\view\FileTemplate');
         $this->fileTemplate->expects($this->any())
             ->method('getTemplatePath')
-            ->will($this->returnValue(__DIR__ . '/../../../fixtures/view/file_template.html.php'));
+            ->will($this->returnValue($this->getFixturesPath() . '/view/file_template.html.php'));
     }
 
     public function testAddVariable()
     {
         $this->fileTemplate->addVariable('foo', 'bar');
-        $this->assertEquals('Array
+        $this->assertEquals(sprintf('Array
 (
-    [templateFile] => /vagrant/projects/horses/test/horses/test/responder/view/../../../fixtures/view/file_template.html.php
+    [templateFile] => %s/view/file_template.html.php
     [renderedParts] => Array
         (
         )
 
     [foo] => bar
 )
-', $this->fileTemplate->getRendering());
+', $this->getFixturesPath()), $this->fileTemplate->getRendering());
         $this->fileTemplate->addVariable('foo', 'anothervalue');
-        $this->assertEquals('Array
+        $this->assertEquals(sprintf('Array
 (
-    [templateFile] => /vagrant/projects/horses/test/horses/test/responder/view/../../../fixtures/view/file_template.html.php
+    [templateFile] => %s/view/file_template.html.php
     [renderedParts] => Array
         (
         )
 
     [foo] => anothervalue
 )
-', $this->fileTemplate->getRendering());
+', $this->getFixturesPath()), $this->fileTemplate->getRendering());
     }
 
     public function testAddVariables()
     {
         $this->fileTemplate->addVariables(['foo' => 'bar', 'greu' => 'pfff']);
-        $this->assertEquals('Array
+        $this->assertEquals(sprintf('Array
 (
-    [templateFile] => /vagrant/projects/horses/test/horses/test/responder/view/../../../fixtures/view/file_template.html.php
+    [templateFile] => %s/view/file_template.html.php
     [renderedParts] => Array
         (
         )
@@ -59,11 +59,11 @@ class FileTemplateTest extends AbstractTest
     [foo] => bar
     [greu] => pfff
 )
-', $this->fileTemplate->getRendering());
+', $this->getFixturesPath()), $this->fileTemplate->getRendering());
         $this->fileTemplate->addVariable('foo', 'anothervalue');
-        $this->assertEquals('Array
+        $this->assertEquals(sprintf('Array
 (
-    [templateFile] => /vagrant/projects/horses/test/horses/test/responder/view/../../../fixtures/view/file_template.html.php
+    [templateFile] => %s/view/file_template.html.php
     [renderedParts] => Array
         (
         )
@@ -71,11 +71,43 @@ class FileTemplateTest extends AbstractTest
     [foo] => anothervalue
     [greu] => pfff
 )
-', $this->fileTemplate->getRendering());
+', $this->getFixturesPath()), $this->fileTemplate->getRendering());
     }
 
     public function testAddPart()
     {
+        $part = $this->getBasicMock('\horses\responder\view\View');
+        $part->expects($this->any())
+            ->method('getRendering')
+            ->will($this->returnValue('BAR'));
+        $part->expects($this->any())
+            ->method('addVariables')
+            ->will($this->returnSelf());
 
+        $this->fileTemplate->addPart('foo', $part);
+        $this->assertEquals(sprintf('Array
+(
+    [templateFile] => %s/view/file_template.html.php
+    [renderedParts] => Array
+        (
+            [foo] => BAR
+        )
+
+    [partName] => foo
+    [foo] => BAR
+)
+', $this->getFixturesPath()), $this->fileTemplate->getRendering());
+    }
+
+    /**
+     * @expectedException \horses\responder\view\TemplateNotFoundException
+     */
+    public function testNoTemplateFound()
+    {
+        $this->fileTemplate = $this->getMockForAbstractClass('\horses\responder\view\FileTemplate');
+        $this->fileTemplate->expects($this->any())
+            ->method('getTemplatePath')
+            ->will($this->returnValue('/NOFILE'));
+        $this->fileTemplate->getRendering();
     }
 }

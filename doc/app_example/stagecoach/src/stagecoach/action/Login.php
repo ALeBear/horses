@@ -18,7 +18,7 @@ use horses\Request;
 use horses\doctrine\UserIdFactory;
 use horses\doctrine\UserFactory;
 use stagecoach\action\admin\Index;
-use stagecoach\PostCredentialsFactory;
+use stagecoach\PostCredentialsStrategy;
 use stagecoach\responder\LoginResponder;
 use horses\Router;
 
@@ -45,7 +45,7 @@ class Login implements Action, StatefulAction, AuthenticatingAction, Authenticat
     /** @inheritdoc */
     public function getCredentialsFactory()
     {
-        return new PostCredentialsFactory();
+        return new PostCredentialsStrategy();
     }
 
     /** @inheritdoc */
