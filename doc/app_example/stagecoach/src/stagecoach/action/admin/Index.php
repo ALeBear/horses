@@ -11,8 +11,7 @@ class Index extends AbstractAction
     /** @inheritdoc */
     public function execute(Request $request, Router $router)
     {
-        $responder = new IndexResponder();
-        $responder->setUsername($this->user->__toString());
+        $responder = $this->prepareResponder(new IndexResponder());
 
         return $responder;
     }

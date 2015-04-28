@@ -7,7 +7,7 @@
     <li>
         Articles
         <ul>
-            <li><a href="">Liste</a></li>
+            <li><a href="<?= $this->linkToAction('stagecoach\admin\ArticleList') ?>">Liste</a></li>
             <li><a href="<?= $this->linkToAction('stagecoach\admin\ArticleEdit') ?>">Nouveau</a></li>
         </ul>
     </li>

@@ -11,9 +11,14 @@ class ArticleEditResponder extends AbstractResponder
     /** @var Article */
     protected $article;
 
+    /**
+     * @param Article $article
+     * @return $this
+     */
     public function setArticle(Article $article)
     {
         $this->article = $article;
+        return $this;
     }
 
     /** @inheritdoc */

@@ -2,18 +2,15 @@
 
 namespace stagecoach\responder;
 
-use horses\responder\Responder;
 use horses\Router;
 use stagecoach\responder\login\LoginFormPartial;
 
-class LoginResponder implements Responder
+class LoginResponder extends AbstractResponder
 {
     /** @var  string */
     protected $username;
     /** @var  string */
     protected $password;
-    /** @var  string */
-    protected $message;
 
     /**
      * @param string $username
@@ -27,16 +24,6 @@ class LoginResponder implements Responder
         return $this;
     }
 
-    /**
-     * @param string $text
-     * @return $this
-     */
-    public function setMessage($text)
-    {
-        $this->message = $text;
-        return $this;
-    }
-
     /** @inheritdoc */
     public function output(Router $router)
     {
@@ -46,8 +33,10 @@ class LoginResponder implements Responder
         $layout->addVariable('username', $this->username);
         $layout->addVariable('password', $this->password);
         $layout->addVariable('message', $this->message);
-        $loginPartial = new LoginFormPartial($layout);
+
+        $loginPartial = $this->preparePartial(new LoginFormPartial($layout));
         $layout->addPart('content', $loginPartial);
+
         echo $layout->getRendering();
     }
 }

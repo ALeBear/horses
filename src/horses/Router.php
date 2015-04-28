@@ -101,7 +101,7 @@ class Router
         }
 
         $subnamespaces = $this->config->get(self::CONFIG_KEY_ACTION_SUBNAMESPACES, []);
-        if (is_array($subnamespaces) && count($subnamespaces) && in_array($parts[0], $subnamespaces)) {
+        if (is_array($subnamespaces) && count($subnamespaces) && count($parts) && in_array($parts[0], $subnamespaces)) {
             $actionName = $parts[0] . '\\';
             array_shift($parts);
         }

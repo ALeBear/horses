@@ -2,9 +2,9 @@
 
 namespace stagecoach\responder\admin\article;
 
-use horses\responder\view\html\Partial;
+use stagecoach\responder\AbstractPartial;
 
-class FormPartial extends Partial
+class FormPartial extends AbstractPartial
 {
     /**
      * @return string
