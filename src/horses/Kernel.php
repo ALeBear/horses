@@ -7,7 +7,7 @@ use horses\doctrine\EntityManagerFactory;
 use horses\i18n\I18nFactory;
 use horses\doctrine\ProxiesNotWritableException;
 use horses\i18n\Translator;
-use horses\responder\ExceptionResponder;
+use horses\config\Config;
 use Symfony\Component\Config\FileLocator;
 use horses\config\YamlFileLoader;
 use horses\config\Collection as ConfigCollection;
@@ -23,22 +23,26 @@ class Kernel
 
     /** @var  ServerContext */
     protected $serverContext;
-    /** @var  ExceptionResponder */
-    protected $exceptionResponder;
+    /** @var  ExceptionHandler */
+    protected $exceptionHandler;
     /** @var  ConfigCollection */
     protected $configCollection;
+    /** @var  Router */
+    protected $router;
 
     /**
      * @param $projectRootPath
      * @param $environment
      * @param ServerContext $emptyContext
-     * @param ExceptionResponder $exceptionResponder
+     * @param ExceptionHandler $exceptionHandler
      */
-    public function __construct($projectRootPath, $environment, ServerContext $emptyContext, ExceptionResponder $exceptionResponder)
+    public function __construct($projectRootPath, $environment, ServerContext $emptyContext, ExceptionHandler $exceptionHandler)
     {
         $this->serverContext = $this->buildContext($emptyContext, $environment, $projectRootPath);
         $this->serverContext->set('APP', $this->getConfigCollection()->getSection(self::CONFIG_SECTION)->get(self::CONFIG_KEY_APPLICATION));
-        $this->exceptionResponder = $exceptionResponder->setDisplayErrorDetailFlag($this->serverContext->isProductionEnvironment());
+        $this->exceptionHandler = $exceptionHandler
+            ->setDisplayErrorDetailFlag($this->serverContext->isProductionEnvironment())
+            ->setRouter($this->getRouter());
     }
 
     /**
@@ -54,7 +58,7 @@ class Kernel
             }
 
             $loader = new YamlFileLoader(new FileLocator([$configDir, $configDir . '/' . $this->serverContext->getEnvironment()]));
-            $this->configCollection = new ConfigCollection(new Factory($loader, \horses\config\Config::class));
+            $this->configCollection = new ConfigCollection(new Factory($loader, Config::class));
             $this->configCollection->load(self::CONFIG_SECTION);
         }
 
@@ -70,11 +74,11 @@ class Kernel
     }
 
     /**
-     * @return ExceptionResponder
+     * @return ExceptionHandler
      */
-    public function getExceptionResponder()
+    public function getExceptionHandler()
     {
-        return $this->exceptionResponder;
+        return $this->exceptionHandler;
     }
 
     /**
@@ -99,7 +103,11 @@ class Kernel
      */
     public function getRouter()
     {
-        return new Router($this->getServerContext(), $this->getConfigCollection());
+        if (!$this->router) {
+            $this->router = new Router($this->getServerContext(), $this->getConfigCollection());
+        }
+
+        return $this->router;
     }
 
     /**

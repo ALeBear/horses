@@ -43,13 +43,13 @@ class FrontController
             /** @var Action $action */
             $responder = $action->execute($request, $router);
         } catch (UnknownRouteException $e) {
-            $responder = $kernel->getExceptionResponder()->setException($e, 404);
+            $responder = $kernel->getExceptionHandler()->handle404($e);
         } catch (AccessControlException $e) {
-            $responder = $kernel->getExceptionResponder()->setException($e, 401);
+            $responder = $kernel->getExceptionHandler()->handle401($e);
         } catch (HorsesException $e) {
-            $responder = $kernel->getExceptionResponder()->setException($e, 400);
+            $responder = $kernel->getExceptionHandler()->handleGeneric($e, 400);
         } catch (Exception $e) {
-            $responder = $kernel->getExceptionResponder()->setException($e, 500);
+            $responder = $kernel->getExceptionHandler()->handleGeneric($e, 500);
         }
 
         $responder->output($router);
