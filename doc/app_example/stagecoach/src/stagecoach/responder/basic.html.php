@@ -2,9 +2,18 @@
 /** @var $menu string */
 /** @var $content string */
 ?>
-<div style="float: left">
-<?= $menu ?>
-</div>
-<div style="float: left">
-<?= $content ?>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/css/stagecoach.css"
+</head>
+<body>
+    <div class="menu">
+    <?= $menu ?>
+    </div>
+    <div class="content">
+    <?= $content ?>
+    </div>
+</body>
+</html>
