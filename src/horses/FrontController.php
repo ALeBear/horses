@@ -16,8 +16,8 @@ class FrontController
 {
     public function run(Request $request, Kernel $kernel)
     {
+        $router = $kernel->getRouter();
         try {
-            $router = $kernel->getRouter();
             $action = $router->route($request);
 
             if ($action instanceof StatefulAction) {
@@ -43,19 +43,13 @@ class FrontController
             /** @var Action $action */
             $responder = $action->execute($request, $router);
         } catch (UnknownRouteException $e) {
-            //404
-            die('404');
+            $responder = $kernel->getExceptionResponder()->setException($e, 404);
         } catch (AccessControlException $e) {
-            //400
-            die('401');
+            $responder = $kernel->getExceptionResponder()->setException($e, 401);
         } catch (HorsesException $e) {
-            //400
-            echo '<pre>';print_r($e);
-            die('400');
+            $responder = $kernel->getExceptionResponder()->setException($e, 400);
         } catch (Exception $e) {
-            //500
-            echo '<pre>';print_r($e);
-            die('500');
+            $responder = $kernel->getExceptionResponder()->setException($e, 500);
         }
 
         $responder->output($router);

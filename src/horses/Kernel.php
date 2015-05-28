@@ -7,6 +7,7 @@ use horses\doctrine\EntityManagerFactory;
 use horses\i18n\I18nFactory;
 use horses\doctrine\ProxiesNotWritableException;
 use horses\i18n\Translator;
+use horses\responder\ExceptionResponder;
 use Symfony\Component\Config\FileLocator;
 use horses\config\YamlFileLoader;
 use horses\config\Collection as ConfigCollection;
@@ -22,6 +23,8 @@ class Kernel
 
     /** @var  ServerContext */
     protected $serverContext;
+    /** @var  ExceptionResponder */
+    protected $exceptionResponder;
     /** @var  ConfigCollection */
     protected $configCollection;
 
@@ -29,11 +32,13 @@ class Kernel
      * @param $projectRootPath
      * @param $environment
      * @param ServerContext $emptyContext
+     * @param ExceptionResponder $exceptionResponder
      */
-    public function __construct($projectRootPath, $environment, ServerContext $emptyContext)
+    public function __construct($projectRootPath, $environment, ServerContext $emptyContext, ExceptionResponder $exceptionResponder)
     {
         $this->serverContext = $this->buildContext($emptyContext, $environment, $projectRootPath);
         $this->serverContext->set('APP', $this->getConfigCollection()->getSection(self::CONFIG_SECTION)->get(self::CONFIG_KEY_APPLICATION));
+        $this->exceptionResponder = $exceptionResponder->setDisplayErrorDetailFlag($this->serverContext->isProductionEnvironment());
     }
 
     /**
@@ -62,6 +67,14 @@ class Kernel
     public function getServerContext()
     {
         return $this->serverContext;
+    }
+
+    /**
+     * @return ExceptionResponder
+     */
+    public function getExceptionResponder()
+    {
+        return $this->exceptionResponder;
     }
 
     /**

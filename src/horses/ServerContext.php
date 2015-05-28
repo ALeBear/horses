@@ -7,6 +7,7 @@ use \Symfony\Component\HttpFoundation\ParameterBag;
 class ServerContext extends ParameterBag
 {
     const DEFAULT_ENV = 'prod';
+    const PROD_ENV = 'prod';
 
     const DIR_ROOT = 'DIR_ROOT';
     const DIR_SRC = 'DIR_LIB';
@@ -38,5 +39,13 @@ class ServerContext extends ParameterBag
     public function getPath($dir)
     {
         return $this->get($dir);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isProductionEnvironment()
+    {
+        return $this->getEnvironment() == self::PROD_ENV;
     }
 }
