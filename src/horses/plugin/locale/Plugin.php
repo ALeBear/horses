@@ -64,6 +64,6 @@ class Plugin implements IPlugin
     {
         $dependencyInjectionContainer->get('locale')
             ->injectPath(sprintf('%s/%s', $request->attributes->get('DIR_CONTROLLERS'), $request->attributes->get('MODULE')))
-            ->addDictionaryFilename(sprintf('%s-dict', $request->attributes->get('ACTION')));
+            ->addDictionaryFilename(ucfirst(sprintf('%s-dict', $request->attributes->get('ACTION'))));
     }
 }
